@@ -1,7 +1,7 @@
-const { responseSender, updateResponseSender } = require("../helpers/wrappers/response-sender");
 const CredentialService = require("../services/credential");
 const UserService = require("../services/user");
-var moment = require('moment');
+const { responseSender, updateResponseSender } = require("../helpers/wrappers/response-sender");
+const moment = require('moment');
 
 module.exports = {
     add: async (req, res) => {
