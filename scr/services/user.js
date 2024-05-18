@@ -2,6 +2,8 @@ const db = require('../models');
 const User = db.users;
 const CustomError = require("../helpers/errors/custom-errors");
 const errors = require("../helpers/errors/errors");
+const jwt = require("jsonwebtoken");
+const secretKey = require("../helpers/db/config.secret");
 class UserService {
     constructor({ firstName, lastName, birthDate, image, credentialId }) {
         this.firstName = firstName;
@@ -26,9 +28,19 @@ class UserService {
             lastName: this.lastName,
             image: this.image,
             birthDate: Date.parse(this.birthDate)
-        }, { new: true });
+        }, { new: true });//{new:true} to return data after update
     }
-
+    async login(cred){
+        const user = await User.findOne({credentialId:cred._id});
+        let token = jwt.sign({ userId: user._id, role: cred.role }, secretKey, { expiresIn: "30 days" });
+        return {info:user,token:token};
+    }
+    async enroll(courseId,userId){
+        return await User.findByIdAndUpdate(userId,{$push:{enrolledCourses:courseId}}, { new: true });
+    }
+    async finishCourse(courseId,userId){
+        return await User.findByIdAndUpdate(userId,{$push:{finishedCourses:courseId}}, { new: true });
+    }
 }
 
 module.exports = UserService;

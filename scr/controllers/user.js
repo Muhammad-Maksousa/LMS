@@ -1,6 +1,6 @@
 const CredentialService = require("../services/credential");
 const UserService = require("../services/user");
-const { responseSender, updateResponseSender } = require("../helpers/wrappers/response-sender");
+const { responseSender, updateResponseSender, ResponseSenderWithToken } = require("../helpers/wrappers/response-sender");
 const moment = require('moment');
 
 module.exports = {
@@ -19,7 +19,23 @@ module.exports = {
         if (body.password)
             await new CredentialService({ ...body }).changePassword(id);
         const updateedUser = await new UserService({ ...body }).update(id);
-        console.log(updateedUser);
         updateResponseSender(res, 'User');
+    },
+    login: async (req, res) => {
+        const { body } = req;
+        const credential = await new CredentialService({ ...body }).login();
+        const user = await new UserService({}).login(credential);
+        ResponseSenderWithToken(res, user.info, user.token);
+    },
+    enroll: async (req, res) => {
+        const { courseId, userId } = req.query;
+        const user = await new UserService({}).enroll(courseId,userId);
+        responseSender(res,user);
+    },
+    finishedCourse: async (req,res)=>{
+        const { courseId, userId } = req.query;
+        const user = await new UserService({}).finishCourse(courseId,userId);
+        responseSender(res,user);
     }
+
 }

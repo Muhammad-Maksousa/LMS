@@ -1,7 +1,8 @@
 const db = require('../models');
 const Credential = db.credentials;
 const CustomError = require("../helpers/errors/custom-errors");
-const errors = require("../helpers/errors/errors");
+const errors = require("../helpers/errors/errors.json");
+const bcrypt = require("bcryptjs");
 class CredentialService {
     constructor({ email, password, role }) {
         this.email = email;
@@ -9,9 +10,9 @@ class CredentialService {
         this.role = role;
     }
     async add() {
-        const credential = new Credential({
+        const credential = await new Credential({
             email: this.email,
-            password: this.password,
+            password: bcrypt.hashSync(this.password, 8),
             role: this.role
         });
         return await credential.save();
@@ -21,6 +22,13 @@ class CredentialService {
             email: this.email,
             password: this.password
         }, { new: true });
+    }
+    async login(){
+        const cred = await Credential.findOne({email:this.email});
+        let passwordIsValid = bcrypt.compareSync(this.password,cred.password);
+        if(!passwordIsValid)
+            throw new CustomError(errors.Validation_Error);
+        return cred;
     }
 
 }

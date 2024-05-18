@@ -1,5 +1,5 @@
 const Role = require('../helpers/roles');
-
+const bcrypt = require("bcryptjs");
 module.exports = mongoose => {
   var schema = mongoose.Schema(
     {
