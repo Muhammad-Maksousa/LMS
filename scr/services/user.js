@@ -1,5 +1,4 @@
-const db = require('../models');
-const User = db.users;
+const User = require('../models/user');
 const CustomError = require("../helpers/errors/custom-errors");
 const errors = require("../helpers/errors/errors");
 const jwt = require("jsonwebtoken");
@@ -40,6 +39,9 @@ class UserService {
     }
     async finishCourse(courseId,userId){
         return await User.findByIdAndUpdate(userId,{$push:{finishedCourses:courseId}}, { new: true });
+    }
+    async getProfile(id){
+        return await User.findById(id).populate([{ path: 'credentials', strictPopulate: false }]).exec();
     }
 }
 

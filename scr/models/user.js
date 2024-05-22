@@ -1,9 +1,10 @@
+const Course = require("./../models/course");
 module.exports = mongoose => {
     var schema = mongoose.Schema(
         {
             credentialId: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: "credential",
+                ref: "credentials",
                 required: true
             },
             firstName: {
@@ -23,13 +24,18 @@ module.exports = mongoose => {
                 required: false,
             },
             finishedCourses: {
-                type: Array
+                type: Array,
+                ref: 'courses'
             },
             enrolledCourses: {
-                type: Array
+                type: Array,
+                ref: 'courses'
             }
         },
-        { timestamps: true }
+        {
+            timestamps: true,
+            strictPopulate: false
+        }
     );
 
     schema.method("toJSON", function () {
@@ -39,5 +45,5 @@ module.exports = mongoose => {
     });
 
     const User = mongoose.model("user", schema);
-    return User;
+    module.exports = User;
 };

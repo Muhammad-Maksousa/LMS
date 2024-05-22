@@ -1,5 +1,4 @@
-const db = require('../models');
-const Credential = db.credentials;
+const Credential = require('../models/credential');
 const CustomError = require("../helpers/errors/custom-errors");
 const errors = require("../helpers/errors/errors.json");
 const bcrypt = require("bcryptjs");

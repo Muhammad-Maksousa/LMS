@@ -18,7 +18,7 @@ module.exports = mongoose => {
         default: Role.user
       },
     },
-    { timestamps: true }
+    { timestamps: true, strictPopulate: false }
   );
 
   schema.method("toJSON", function () {
@@ -28,5 +28,5 @@ module.exports = mongoose => {
   });
 
   const Credential = mongoose.model("credential", schema);
-  return Credential;
+  module.exports = Credential;
 };

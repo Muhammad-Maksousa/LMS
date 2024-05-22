@@ -8,15 +8,19 @@ module.exports = {
         const { body } = req;
         const credential = await new CredentialService({ ...body }).add();
         body.credentialId = credential._id;
+        if (req.file)
+            body.image = req.file.filename;
         if (body.birthDate)
             body.birthDate = moment(body.birthDate, "DD/MM/YYYY");
         const user = await new UserService({ ...body }).add();
         responseSender(res, user);
     },
     update: async (req, res) => {
-        const { id } = req.query;
+        const { id } = req.params;
         const { body } = req;
-        if (body.password)
+        if (req.file)
+            body.image = req.file.filename;
+        if (body.password || body.email)
             await new CredentialService({ ...body }).changePassword(id);
         const updateedUser = await new UserService({ ...body }).update(id);
         updateResponseSender(res, 'User');
@@ -29,12 +33,17 @@ module.exports = {
     },
     enroll: async (req, res) => {
         const { courseId, userId } = req.query;
-        const user = await new UserService({}).enroll(courseId,userId);
-        responseSender(res,user);
+        const user = await new UserService({}).enroll(courseId, userId);
+        responseSender(res, user);
     },
-    finishedCourse: async (req,res)=>{
+    finishedCourse: async (req, res) => {
         const { courseId, userId } = req.query;
-        const user = await new UserService({}).finishCourse(courseId,userId);
+        const user = await new UserService({}).finishCourse(courseId, userId);
+        responseSender(res, user);
+    },
+    getProfile:async (req,res)=>{
+        const {id} = req.params;
+        const user = await new UserService({}).getProfile(id);
         responseSender(res,user);
     }
 
