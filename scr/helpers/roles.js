@@ -1,5 +1,5 @@
 const user = 'user';
-const admin = 'admin';
+const teacher = 'teacher';
 const superAdmin = 'superAdmin';
 module.exports = {
     user,admin,superAdmin

@@ -1,15 +1,17 @@
 const User = require('../models/user');
+const roles = require("../helpers/roles");
 const CustomError = require("../helpers/errors/custom-errors");
 const errors = require("../helpers/errors/errors");
 const jwt = require("jsonwebtoken");
 const secretKey = require("../helpers/db/config.secret");
 class UserService {
-    constructor({ firstName, lastName, birthDate, image, credentialId }) {
+    constructor({ firstName, lastName, birthDate, image, credentialId ,role}) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.birthDate = birthDate;
         this.image = image;
         this.credentialId = credentialId;
+        this.role = role;
     }
     async add() {
         const user = new User({
@@ -17,7 +19,8 @@ class UserService {
             lastName: this.lastName,
             image: this.image,
             birthDate: Date.parse(this.birthDate),
-            credentialId: this.credentialId
+            credentialId: this.credentialId,
+            role : this.role
         });
         return await user.save();
     }
