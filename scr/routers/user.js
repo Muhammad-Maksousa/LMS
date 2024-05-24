@@ -1,15 +1,20 @@
 const router = require("express").Router();
 const controller = require("../controllers/user");
 const apiHandler = require("../helpers/wrappers/api-handler");
-const { verifyUserToken, verifyAdminToken } = require("../middleware/auth");
+const { verifyUserToken } = require("../middleware/auth");
 const upload = require("../helpers/uploadSingleImage");
 
 
 router.post("/", upload.single('image'), apiHandler(controller.add));
 router.post("/login", apiHandler(controller.login));
-router.put("/update/:id", upload.single('image'),apiHandler(controller.update));
-router.post("/enroll", apiHandler(controller.enroll));
-router.post("/finishedCourse", apiHandler(controller.finishedCourse));
-router.get("/profile/:id",apiHandler(controller.getProfile));
+router.put("/update",apiHandler(verifyUserToken), upload.single('image'),apiHandler(controller.update));
+router.post("/enroll/:courseId",apiHandler(verifyUserToken), apiHandler(controller.enroll));
+router.post("/finishedCourse/:courseId",apiHandler(verifyUserToken), apiHandler(controller.finishedCourse));
+router.get("/finishedCourses",apiHandler(verifyUserToken), apiHandler(controller.getMyFinishedCourses));
+router.get("/enrolledCourses",apiHandler(verifyUserToken), apiHandler(controller.getMyEnrolledCourses));
+router.get("/profile",apiHandler(verifyUserToken),apiHandler(controller.getProfile));
+router.get("/wishlist/:courseId",apiHandler(verifyUserToken),apiHandler(controller.addToWishList));
+router.get("/wishlist",apiHandler(verifyUserToken),apiHandler(controller.getWishList));
+router.delete("/wishlist/:courseId",apiHandler(verifyUserToken),apiHandler(controller.deleteFromWishList));
 
 module.exports = router;

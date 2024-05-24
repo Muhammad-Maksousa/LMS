@@ -4,7 +4,7 @@ module.exports = mongoose => {
         {
             credentialId: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: "credentials",
+                ref: "credential",
                 required: true
             },
             firstName: {
@@ -25,11 +25,15 @@ module.exports = mongoose => {
             },
             finishedCourses: {
                 type: Array,
-                ref: 'courses'
+                ref: 'Course'
             },
             enrolledCourses: {
                 type: Array,
-                ref: 'courses'
+                ref: 'Course'
+            },
+            wishlist: {
+                type: Array,
+                ref: 'Course'
             }
         },
         {

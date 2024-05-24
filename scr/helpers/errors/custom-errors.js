@@ -16,7 +16,7 @@ class CustomError {
             };
             res.status(err.httpStatusCode).send(message)
         } else {
-            res.status(500).send(err)
+            res.status(500).send({'message':err.message,stackTrace:err.stack});
         }
     }
 }

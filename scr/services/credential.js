@@ -17,7 +17,7 @@ class CredentialService {
         return await credential.save();
     }
     async changePassword(id) {
-        return await Credential.findOneAndUpdate({ _id: id }, {
+        return await Credential.findByIdAndUpdate(id, {
             email: this.email,
             password: this.password
         }, { new: true });

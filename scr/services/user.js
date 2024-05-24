@@ -5,7 +5,7 @@ const errors = require("../helpers/errors/errors");
 const jwt = require("jsonwebtoken");
 const secretKey = require("../helpers/db/config.secret");
 class UserService {
-    constructor({ firstName, lastName, birthDate, image, credentialId ,role}) {
+    constructor({ firstName, lastName, birthDate, image, credentialId, role }) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.birthDate = birthDate;
@@ -20,31 +20,47 @@ class UserService {
             image: this.image,
             birthDate: Date.parse(this.birthDate),
             credentialId: this.credentialId,
-            role : this.role
+            role: this.role
         });
         return await user.save();
     }
     async update(id) {
-        return User.findOneAndUpdate({ _id: id }, {
+        return User.findByIdAndUpdate(id, {
             firstName: this.firstName,
             lastName: this.lastName,
             image: this.image,
             birthDate: Date.parse(this.birthDate)
         }, { new: true });//{new:true} to return data after update
     }
-    async login(cred){
-        const user = await User.findOne({credentialId:cred._id});
+    async login(cred) {
+        const user = await User.findOne({ credentialId: cred._id }).populate('credentialId');
         let token = jwt.sign({ userId: user._id, role: cred.role }, secretKey, { expiresIn: "30 days" });
-        return {info:user,token:token};
+        return { info: user, token: token };
     }
-    async enroll(courseId,userId){
-        return await User.findByIdAndUpdate(userId,{$push:{enrolledCourses:courseId}}, { new: true });
+    async enroll(courseId, userId) {
+        return await User.findByIdAndUpdate(userId, { $push: { enrolledCourses: courseId } }, { new: true });
     }
-    async finishCourse(courseId,userId){
-        return await User.findByIdAndUpdate(userId,{$push:{finishedCourses:courseId}}, { new: true });
+    async getMyEnrolledCourses(id){
+        return await User.findById(id).select('enrolledCourses').populate('enrolledCourses');
     }
-    async getProfile(id){
-        return await User.findById(id).populate([{ path: 'credentials', strictPopulate: false }]).exec();
+    async finishCourse(courseId, userId) {
+        await User.findByIdAndUpdate(userId, { $pull: { enrolledCourses: courseId } }, { new: true });
+        return await User.findByIdAndUpdate(userId, { $push: { finishedCourses: courseId } }, { new: true });
+    }
+    async getMyFinishedCourses(id){
+        return await User.findById(id).select('finishedCourses').populate('finishedCourses');
+    }
+    async getProfile(id) {
+        return await User.findById(id).populate('credentialId').populate('enrolledCourses').populate('finishedCourses');
+    }
+    async addToWishList(userId, courseId) {
+        return await User.findByIdAndUpdate(userId, { $push: { wishlist: courseId } }, { new: true });
+    }
+    async deleteFromWishList(userId,courseId){
+        return await User.findByIdAndUpdate(userId, { $pull: { wishlist: courseId } }, { new: true });
+    }
+    async getWishList(id){
+        return await User.findById(id).select('wishlist').populate('wishlist');
     }
 }
 
