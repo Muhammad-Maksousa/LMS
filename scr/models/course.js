@@ -50,6 +50,11 @@ const courseSchema = mongoose.Schema({
   subtitle: {
     type: String,
   },
+  video:[{type:mongoose.Types.ObjectId,
+    ref:'Video'}] 
+  ,
+  article:[{type:mongoose.Types.ObjectId,
+    ref:'Article'}] ,
   managment: String,
   what_you_will_learn: String,
   Image: String,
