@@ -55,6 +55,8 @@ const courseSchema = mongoose.Schema({
   ,
   article:[{type:mongoose.Types.ObjectId,
     ref:'Article'}] ,
+  quiz:[{type:mongoose.Types.ObjectId,ref:'Quiz'}]  
+    ,
   managment: String,
   what_you_will_learn: String,
   Image: String,
