@@ -1,13 +1,19 @@
 const { duration } = require("moment");
+const User = require('../models/user');
 const mongoose = require("mongoose");
 const courseSchema = mongoose.Schema({
   name: {
     type: String,
-    required: [true, "the course must hava name"],
+    required: [true, "the course must hava a name"],
   },
   rate: {
     type: Number,
   },
+  ratings: [{
+    rate: Number,
+    userId: { type: mongoose.Types.ObjectId, ref: 'User' },
+    comment: String
+  }],
   cost: {
     type: Number,
     default: 0,
@@ -50,13 +56,19 @@ const courseSchema = mongoose.Schema({
   subtitle: {
     type: String,
   },
-  video:[{type:mongoose.Types.ObjectId,
-    ref:'Video'}] 
+  video: [{
+    type: mongoose.Types.ObjectId,
+    ref: 'Video'
+  }]
   ,
-  article:[{type:mongoose.Types.ObjectId,
-    ref:'Article'}] ,
-  quiz:[{type:mongoose.Types.ObjectId,ref:'Quiz'}]  
-    ,
+  article: [{
+    type: mongoose.Types.ObjectId,
+    ref: 'Article'
+  }],
+  quiz: [{ 
+    type: mongoose.Types.ObjectId,
+     ref: 'Quiz' 
+    }],
   managment: String,
   what_you_will_learn: String,
   Image: String,

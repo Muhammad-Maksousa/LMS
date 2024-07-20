@@ -25,7 +25,7 @@ class CredentialService {
     async login(){
         const cred = await Credential.findOne({email:this.email});
         let passwordIsValid = bcrypt.compareSync(this.password,cred.password);
-        if(!passwordIsValid)
+        if(!passwordIsValid || !cred)
             throw new CustomError(errors.Validation_Error);
         return cred;
     }
