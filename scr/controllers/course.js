@@ -1,7 +1,7 @@
 const Course = require("./../models/course");
 const ApiFeatuers = require("./../services/ApiFeatuers");
 exports.getAllCourse = async (req, res) => {
-  const featuers = new ApiFeatuers(Course.find().populate('video').populate('article'), req.query)
+  const featuers = new ApiFeatuers(Course.find().populate('video').populate('article').populate('quiz'), req.query)
     .filter()
     .sort()
     .limitField()
@@ -17,7 +17,7 @@ exports.getAllCourse = async (req, res) => {
   });
 };
 exports.getCourse = async (req, res) => {
-  const course = await Course.findById(req.params.id).populate('video').populate('article');
+  const course = await Course.findById(req.params.id).populate('video').populate('article').populate('quiz');
   res.status(200).json({
     status: "sucsess",
     data: {

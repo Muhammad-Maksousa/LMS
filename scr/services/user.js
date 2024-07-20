@@ -4,7 +4,7 @@ const CustomError = require("../helpers/errors/custom-errors");
 const errors = require("../helpers/errors/errors");
 const jwt = require("jsonwebtoken");
 const secretKey = require("../helpers/db/config.secret");
-const mongoose=require('mongoose')
+const mongoose = require("mongoose");
 class UserService {
   constructor({ firstName, lastName, birthDate, image, credentialId, role }) {
     this.firstName = firstName;
@@ -111,21 +111,28 @@ class UserService {
       prog.courseID.equals(courseId)
     );
     if (courseProgress) {
-      courseProgress.done.push(done);
-      courseProgress.doneModel.push(model);
+      // Check if the done item exists in the current progress
+      const existed = courseProgress.done.some((doneId) => doneId.equals(done));
+      if (!existed) {
+        // If the done item does not exist, add it
+        courseProgress.done.push(done);
+        courseProgress.doneModel.push(model);
+      }
     } else {
-        const courseProgress = user.progress.push({
-          courseID: courseId,
-          done:done,
-          doneModel:model
+      const courseProgress = user.progress.push({
+        courseID: courseId,
+        done: done,
+        doneModel: model,
+      });
 
-          });
-    
-    // user.progress.course=new mongoose.Types.ObjectId(courseId)
-    // user.progress.course.done=done
-    // user.progress.course.doneModel=model
+      // user.progress.course=new mongoose.Types.ObjectId(courseId)
+      // user.progress.course.done=done
+      // user.progress.course.doneModel=model
     }
-    await User.findByIdAndUpdate(userId, user, { new: true, runValdiators:true });
+    await User.findByIdAndUpdate(userId, user, {
+      new: true,
+      runValdiators: true,
+    });
     return user.progress;
   }
 }
