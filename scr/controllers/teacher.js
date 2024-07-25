@@ -4,10 +4,14 @@ const { responseSender, updateResponseSender, ResponseSenderWithToken } = requir
 module.exports = {
     add: async (req, res) => {
         const { body } = req;
+        console.log(body.socialMediaAccounts[0]);/*
         const credential = await new CredentialService({ ...body }).add();
         body.credentialId = credential._id;
-        if (req.file) body.image = req.file.filename;
-        const teacher = await new TeacherService({ ...body }).add();
+        if (req.files){
+            body.image = req.files[0].filename;
+            body.cv = req.files[1].filename;
+        }
+        const teacher = await new TeacherService({ ...body }).add();*/
         responseSender(res, teacher);
     },
     update: async (req, res) => {
@@ -19,7 +23,7 @@ module.exports = {
             await new CredentialService({ ...body }).changePassword(teacher.credentialId);
         }
         const updatedTeacher = await new TeacherService({ ...body }).update(teacherId);
-        updateResponseSender(res, "User");
+        updateResponseSender(res, "teacher");
     },
     login: async (req, res) => {
         const { body } = req;
@@ -27,4 +31,9 @@ module.exports = {
         const user = await new TeacherService({}).login(credential);
         ResponseSenderWithToken(res, user.info, user.token);
     },
+    getProfile:async (req,res)=>{
+        const {teacherId} = req.params;
+        const Teacher = await new TeacherService({}).getProfile(teacherId);
+        responseSender(res,Teacher);
+    }
 };

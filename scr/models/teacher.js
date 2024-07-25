@@ -15,11 +15,11 @@ const teacherSchema = mongoose.Schema({
     },
     image: {
         type: String,
-        required: false,
+        required: true,
     },
     CV: {
         type: String,
-        required: false,
+        required: true,
     },
     subject: {
         type: String,
@@ -27,7 +27,7 @@ const teacherSchema = mongoose.Schema({
     },
     summery: {
         type: String,
-        required: true,
+        required: false,
     },
     socialMediaAccounts:{
         type:Array,
@@ -35,8 +35,13 @@ const teacherSchema = mongoose.Schema({
     },
     wallet: {
         type: Number,
-        required: false,
+        required: true,
         default:0
+    },
+    status: {
+        type: String,
+        required: true,
+        default:"pending"
     },
 });
 const Teacher = mongoose.model("Teacher", teacherSchema);

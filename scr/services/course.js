@@ -13,5 +13,8 @@ class CourseService {
         let res = await Course.aggregate([{ $unwind: "$ratings" }, { $group: { _id: courseId, rate: { $avg: "$ratings.rate" } } }]);
         return await Course.findByIdAndUpdate(courseId, { rate: res[0].rate }, { new: true });
     }
+    async getAllCoursesByTeacherId(teacherId){
+        return await Course.find({Teacher_ID:{$in:[teacherId]}});
+    }
 }
 module.exports = CourseService;

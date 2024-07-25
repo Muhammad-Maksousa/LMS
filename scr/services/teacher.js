@@ -22,7 +22,8 @@ class TeacherService {
             subject: this.subject,
             summery: this.summery,
             socialMediaAccounts: this.socialMediaAccounts,
-            wallet: 0
+            wallet: 0,
+            status:"pending"
         });
         return await teacher.save();
     }
@@ -44,6 +45,9 @@ class TeacherService {
       }
     async getProfile(id) {
         return await Teacher.findById(id).populate("credentialId");
+    }
+    async approvedByAdmin(teacherId){
+        return await Teacher.findByIdAndUpdate(teacherId,{status:"Active"},{new:true});
     }
 }
 

@@ -46,9 +46,10 @@ const courseSchema = mongoose.Schema({
       message: '({VALUE}) is not valid for Education_Level just this values is true: 1- Elementary 2- Secondary 3- High level 4- Beginner 5- Intermediate 6- Advanced'
     },
   },
-  Teacher_ID: {
-    type: Number,
-  },
+  Teacher_ID: [{
+    type: mongoose.Types.ObjectId,
+    ref:"Teacher",
+  }],
   Categories: {
     type: String,
   },
