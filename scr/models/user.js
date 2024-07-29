@@ -6,7 +6,8 @@ const courseProgressSchema = new mongoose.Schema({
   doneModel: {
     type: [String],
     enum: ["Video", "Article", "Quiz"]
-  }
+  },
+  percent: Number,
 },{_id:false});
 module.exports = (mongoose) => {
   var schema = mongoose.Schema(
@@ -44,7 +45,12 @@ module.exports = (mongoose) => {
         type: Array,
         ref: "Course",
       },
-      progress: [courseProgressSchema]
+      progress: [courseProgressSchema],
+      wallet: {
+        type: Number,
+        required: false,
+        default:0
+    },
   },
     {
       timestamps: true,

@@ -43,8 +43,8 @@ exports.deleteCourse = async (req, res) => {
 };
 exports.updateCourse = async (req, res) => {
   const course = await Course.findByIdAndUpdate(req.params.id, req.body, {
+    runValidators: true,
     new: true,
-    runValdiators: true,
   });
   res.status(200).json({
     status: "sucsess",
