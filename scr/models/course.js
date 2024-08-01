@@ -48,7 +48,7 @@ const courseSchema = mongoose.Schema({
   },
   Teacher_ID: [{
     type: mongoose.Types.ObjectId,
-    ref:"Teacher",
+    ref: "teacher",
   }],
   Categories: {
     type: String,
@@ -66,13 +66,18 @@ const courseSchema = mongoose.Schema({
     type: mongoose.Types.ObjectId,
     ref: 'Article'
   }],
-  quiz: [{ 
+  quiz: [{
     type: mongoose.Types.ObjectId,
-     ref: 'Quiz' 
-    }],
+    ref: 'Quiz'
+  }],
   managment: String,
   what_you_will_learn: String,
   Image: String,
-});
+},
+  {
+    timestamps: true,
+    strictPopulate: false,
+  }
+);
 const Course = mongoose.model("Course", courseSchema);
 module.exports = Course;

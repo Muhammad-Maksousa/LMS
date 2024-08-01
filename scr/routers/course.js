@@ -8,4 +8,6 @@ router
 .delete(apiHandler(course.deleteCourse))
 .get(apiHandler(course.getCourse))
 .patch(apiHandler(course.updateCourse));
+router.get("/allByTeacher",apiHandler(course.getAllCoursesByTeacherId));
+router.get("/getallUsersOfCourse/:id",apiHandler(course.getAllUsersOfCourse));
 module.exports = router;

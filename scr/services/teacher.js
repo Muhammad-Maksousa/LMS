@@ -1,7 +1,9 @@
 const Teacher = require("../models/teacher");
-
+const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
+const secretKey = require("../helpers/db/config.secret");
 class TeacherService {
-    constructor(credentialId, firstName, lastName, image, cv, subject, summery, socialMediaAccounts, wallet) {
+    constructor({ credentialId, firstName, lastName, image, cv, subject, summery, socialMediaAccounts }) {
         this.credentialId = credentialId;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -10,12 +12,11 @@ class TeacherService {
         this.subject = subject;
         this.summery = summery;
         this.socialMediaAccounts = socialMediaAccounts;
-        this.wallet = wallet;
     }
     async add() {
         const teacher = new Teacher({
             credentialId: this.credentialId,
-            firstname: this.firstName,
+            firstName: this.firstName,
             lastName: this.lastName,
             image: this.image,
             CV: this.cv,
@@ -23,13 +24,13 @@ class TeacherService {
             summery: this.summery,
             socialMediaAccounts: this.socialMediaAccounts,
             wallet: 0,
-            status:"pending"
+            status: "pending"
         });
         return await teacher.save();
     }
     async update(id) {
         return await Teacher.findByIdAndUpdate(id, {
-            firstname: this.firstName,
+            firstName: this.firstName,
             lastName: this.lastName,
             image: this.image,
             CV: this.cv,
@@ -40,14 +41,17 @@ class TeacherService {
     }
     async login(cred) {
         const teacher = await Teacher.findOne({ credentialId: cred._id }).populate("credentialId");
-        let token = jwt.sign({ userId: user._id, role: cred.role }, secretKey, {expiresIn: "30 days"});
+        let token = jwt.sign({ teacherId: teacher._id, role: cred.role }, secretKey, { expiresIn: "30 days" });
         return { info: teacher, token: token };
-      }
+    }
     async getProfile(id) {
         return await Teacher.findById(id).populate("credentialId");
     }
-    async approvedByAdmin(teacherId){
-        return await Teacher.findByIdAndUpdate(teacherId,{status:"Active"},{new:true});
+    async changeStatusByAdmin(teacherId,status) {
+        return await Teacher.findByIdAndUpdate(teacherId, { status: status }, { new: true });
+    }
+    async getAll() {
+        return await Teacher.find();
     }
 }
 

@@ -19,7 +19,7 @@ module.exports = {
         if (req.file) body.image = req.file.filename;
         if (body.password || body.email) {
             const user = await new UserService({}).getProfile(UserId);
-            await new CredentialService({ ...body }).changePassword(user.credentialId);
+            await new CredentialService({ ...body }).changeCredential(user.credentialId);
         }
         const updateedUser = await new UserService({ ...body }).update(UserId);
         updateResponseSender(res, "User");

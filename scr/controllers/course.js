@@ -1,4 +1,4 @@
-const responseSender = require("../helpers/wrappers/response-sender");
+const { responseSender, updateResponseSender, ResponseSenderWithToken } = require("../helpers/wrappers/response-sender");
 const Course = require("./../models/course");
 const CourseService = require("../services/course");
 const ApiFeatuers = require("./../services/ApiFeatuers");
@@ -58,5 +58,10 @@ module.exports = {
     const { teacherId } = req.params;
     const courses = await new CourseService({}).getAllCoursesByTeacherId(teacherId);
     responseSender(res,courses);
+  },
+  getAllUsersOfCourse:async (req,res)=>{
+    const {id} = req.params;
+    const users = await new CourseService({}).getAllUsersOfCourse(id);
+    responseSender(res,users);
   }
 };

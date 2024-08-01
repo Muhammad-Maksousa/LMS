@@ -5,8 +5,9 @@ const errors = require("../helpers/errors/errors.json");
 const User = require("../models/user");
 const Role = require("../helpers/roles");
 const UserService = require('../services/user');
-verifyUserToken = async (req, res, next) => {
-    
+const TeacherService = require('../services/teacher');
+module.exports = {
+    verifyUserToken: async (req, res, next) => {
         let token = req.headers.authorization;
         if (!token)
             throw new CustomError(errors.No_Token_Provided);
@@ -20,7 +21,20 @@ verifyUserToken = async (req, res, next) => {
             req.userRole = user.credentialId.role;
             next();
         });
-};
-module.exports = {
-    verifyUserToken: verifyUserToken,
+    },
+    verifyTeacherToken: async (req, res, next) => {
+        let token = req.headers.authorization;
+        if (!token)
+            throw new CustomError(errors.No_Token_Provided);
+        await jwt.verify(token, secretKey, async (err, decoded) => {
+            if (err)
+                throw new CustomError(errors.Internal_Server_Error);
+            const teacher = await new TeacherService({}).getProfile(decoded.teacherId);
+            if (!teacher)
+                throw new CustomError(errors.Not_Authorized);
+            req.teacherId = teacher._id;
+            req.role = teacher.credentialId.role;
+            next();
+        });
+    }
 };
