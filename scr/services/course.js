@@ -9,8 +9,8 @@ class CourseService {
             rate: info.rate,
             comment: info.comment
         };
-        const alreadyRate = await Course.findOne({"ratings.userId":info.userId,"_id":info.courseId});
-        if(alreadyRate)
+        const alreadyRate = await Course.findOne({ "ratings.userId": info.userId, "_id": info.courseId });
+        if (alreadyRate)
             throw new CustomError(errors.You_Can_Not_Do_This);
         return await Course.findByIdAndUpdate(info.courseId, { $push: { ratings: newRate } }, { new: true });
     }
@@ -18,10 +18,10 @@ class CourseService {
         let res = await Course.aggregate([{ $unwind: "$ratings" }, { $group: { _id: courseId, rate: { $avg: "$ratings.rate" } } }]);
         return await Course.findByIdAndUpdate(courseId, { rate: res[0].rate }, { new: true });
     }
-    async getAllCoursesByTeacherId(teacherId){
-        return await Course.find({Teacher_ID:{$in:[teacherId]}});
+    async getAllCoursesByTeacherId(teacherId) {
+        return await Course.find({ Teacher_ID: { $in: [teacherId] } });
     }
-    async getAllUsersOfCourse(id){
+    async getAllUsersOfCourse(id) {
         return await Course.findById(id).populate("users.enrolledCourses");// tryimg to get a course and all users enrolled in it
     }
 }
