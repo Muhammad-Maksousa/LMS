@@ -5,12 +5,22 @@ const errors = require("../helpers/errors/errors");
 const jwt = require("jsonwebtoken");
 const secretKey = require("../helpers/db/config.secret");
 const mongoose = require("mongoose");
+const Course = require("../models/course");
 class UserService {
-  constructor({ firstName, lastName, birthDate, image, credentialId, role }) {
+  constructor({
+    firstName,
+    lastName,
+    birthDate,
+    image,
+    credentialId,
+    role,
+    wallet,
+  }) {
     this.firstName = firstName;
     this.lastName = lastName;
     this.birthDate = birthDate;
     this.image = image;
+    this.wallet = wallet;
     this.credentialId = credentialId;
     this.role = role;
   }
@@ -18,6 +28,7 @@ class UserService {
     const user = new User({
       firstName: this.firstName,
       lastName: this.lastName,
+      wallet: this.wallet,
       image: this.image,
       birthDate: Date.parse(this.birthDate),
       credentialId: this.credentialId,
@@ -32,6 +43,7 @@ class UserService {
         firstName: this.firstName,
         lastName: this.lastName,
         image: this.image,
+        wallet: this.wallet,
         birthDate: Date.parse(this.birthDate),
       },
       { new: true }
@@ -59,16 +71,22 @@ class UserService {
       .populate("enrolledCourses");
   }
   async finishCourse(courseId, userId) {
-    await User.findByIdAndUpdate(
-      userId,
-      { $pull: { enrolledCourses: courseId } },
-      { new: true }
-    );
-    return await User.findByIdAndUpdate(
-      userId,
-      { $push: { finishedCourses: courseId } },
-      { new: true }
-    );
+    const user = await User.findById(userId);
+    const finishCourse = user.finishedCourses.includes(courseId);
+    if (!finishCourse) {
+      await User.findByIdAndUpdate(
+        userId,
+        { $pull: { enrolledCourses: courseId } },
+        { new: true }
+      );
+      return await User.findByIdAndUpdate(
+        userId,
+        { $push: { finishedCourses: courseId } },
+        { new: true }
+      );
+    } else {
+      return;
+    }
   }
   async getMyFinishedCourses(id) {
     return await User.findById(id)
@@ -107,6 +125,12 @@ class UserService {
     if (!user) {
       throw new Error("User not found");
     }
+    // count all content of course  To calculate a percentage
+    const course = await Course.findById(courseId);
+    let TotalNumberOfContent = 0;
+    TotalNumberOfContent =
+      course.video.length + course.article.length + course.quiz.length;
+    // check if course exists or not
     const courseProgress = user.progress.find((prog) =>
       prog.courseID.equals(courseId)
     );
@@ -117,23 +141,24 @@ class UserService {
         // If the done item does not exist, add it
         courseProgress.done.push(done);
         courseProgress.doneModel.push(model);
+        // count the number
+        const countWhatDone = courseProgress.done.length;
+        const percent = (countWhatDone / TotalNumberOfContent) * 100;
+        courseProgress.percent = percent;
       }
     } else {
       const courseProgress = user.progress.push({
         courseID: courseId,
         done: done,
         doneModel: model,
+        percent: (1 / TotalNumberOfContent) * 100,
       });
-
-      // user.progress.course=new mongoose.Types.ObjectId(courseId)
-      // user.progress.course.done=done
-      // user.progress.course.doneModel=model
     }
     await User.findByIdAndUpdate(userId, user, {
       new: true,
-      runValdiators: true,
+      runValidators: true,
     });
-    return user.progress;
+    return courseProgress;
   }
 }
 

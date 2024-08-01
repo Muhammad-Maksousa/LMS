@@ -1,8 +1,14 @@
 const CredentialService = require("../services/credential");
 const UserService = require("../services/user");
 const CourseService = require("../services/course");
-const { responseSender, updateResponseSender, ResponseSenderWithToken } = require("../helpers/wrappers/response-sender");
+const {
+  responseSender,
+  updateResponseSender,
+  ResponseSenderWithToken,
+} = require("../helpers/wrappers/response-sender");
 const moment = require("moment");
+const User = require("../models/user");
+const Course = require("../models/course");
 module.exports = {
     add: async (req, res) => {
         const { body } = req;
