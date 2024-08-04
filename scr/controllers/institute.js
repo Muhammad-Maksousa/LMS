@@ -18,16 +18,16 @@ module.exports = {
         const { body } = req;
         if (req.file) body.image = req.file.filename;
         if (body.password || body.email) {
-            const institute = await new InstituteService({}).getProfile(teacherId);
-            await new CredentialService({ ...body }).changeCredential(institute.credentialId);
+            const institute = await new InstituteService({}).getProfile(instituteId);
+            await new CredentialService(body ).changeCredential(institute.credentialId);
         }
-        const updatedInstitute = await new InstituteService({ ...body }).update(instituteId);
-        updateResponseSender(res, "teacher");
+        const updatedInstitute = await new InstituteService(body ).update(instituteId,body);
+        updateResponseSender(res, "Institute");
     },
     login: async (req, res) => {
         const { body } = req;
         const credential = await new CredentialService({ ...body }).login();
-        const user = await new TeacherService({}).login(credential);
+        const user = await new InstituteService({}).login(credential);
         ResponseSenderWithToken(res, user.info, user.token);
     },
     getProfile: async (req, res) => {
