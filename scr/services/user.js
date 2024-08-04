@@ -36,18 +36,14 @@ class UserService {
     });
     return await user.save();
   }
-  async update(id) {
-    return User.findByIdAndUpdate(
-      id,
-      {
-        firstName: this.firstName,
-        lastName: this.lastName,
-        image: this.image,
-        wallet: this.wallet,
-        birthDate: Date.parse(this.birthDate),
-      },
-      { new: true }
-    ); //{new:true} to return data after update
+  async update(id, updateData) {
+    if (typeof updateData !== "object" || Array.isArray(updateData)) {
+      throw new Error("Invalid data format for update");
+    }
+    return User.findByIdAndUpdate(id, updateData, {
+      new: true,
+      runValidators: true,
+    }); //{new:true} to return data after update
   }
   async login(cred) {
     const user = await User.findOne({ credentialId: cred._id }).populate(

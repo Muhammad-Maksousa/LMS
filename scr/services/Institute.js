@@ -19,10 +19,21 @@ class InstituteService {
     return await institute.save();
   }
   async update(id, updateData) {
-    return await Institute.findByIdAndUpdate(id, updateData, {
+    if (typeof updateData !== 'object' || Array.isArray(updateData)) {
+      throw new Error('Invalid data format for update');
+    }
+
+    const updatedInstitute = await Institute.findByIdAndUpdate(id, updateData, {
       new: true,
       runValidators: true,
     });
+
+    if (!updatedInstitute) {
+      console.error(`No Institute found with ID: ${id}`);
+      return null;
+    }
+
+    return updatedInstitute;
   }
   async login(cred) {
     const institute = await Institute.findOne({
