@@ -20,12 +20,22 @@ class InstituteService {
         });
         return await institute.save();
     }
-    async update(id) {
-        return await Institute.findByIdAndUpdate(id, {
-            name: this.name,
-            image: this.image,
-            socialMediaAccounts: this.socialMediaAccounts
+    async update(id, updateData) {
+        if (typeof updateData !== 'object' || Array.isArray(updateData)) {
+          throw new Error('Invalid data format for update');
+        }
+    
+        const updatedInstitute = await Institute.findByIdAndUpdate(id, updateData, {
+          new: true,
+          runValidators: true,
         });
+    
+        if (!updatedInstitute) {
+          console.error(`No Institute found with ID: ${id}`);
+          return null;
+        }
+    
+        return updatedInstitute;
     }
     async login(cred) {
         const institute = await Institute.findOne({ credentialId: cred._id }).populate("credentialId");

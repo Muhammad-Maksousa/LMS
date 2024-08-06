@@ -15,7 +15,7 @@ module.exports = {
         responseSender(res, institute);
     },
     update: async (req, res) => {
-        const { instituteId } = req.params;
+        const {  id: instituteId } = req.params;
         const { body } = req;
         if (req.file) body.image = req.file.filename;
         if (body.password || body.email) {

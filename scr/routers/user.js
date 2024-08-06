@@ -6,7 +6,7 @@ const upload = require("../helpers/uploadSingleImage");
 
 router.post("/", upload.single("image"), apiHandler(controller.add));
 router.post("/login", apiHandler(controller.login));
-router.put("/update",apiHandler(verifyUserToken),upload.single("image"),apiHandler(controller.update));
+router.put("/update/:id",apiHandler(verifyUserToken),upload.single("image"),apiHandler(controller.update));
 router.post("/enroll/:courseId",apiHandler(verifyUserToken),apiHandler(controller.enroll));
 router.post("/finishedCourse/:courseId",apiHandler(verifyUserToken),apiHandler(controller.finishedCourse));
 router.post("/rate/:courseId",apiHandler(verifyUserToken),apiHandler(controller.rate));
