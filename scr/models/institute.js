@@ -1,4 +1,3 @@
-const Course = require("./../models/course");
 const mongoose = require("mongoose");
 var schema = mongoose.Schema({
     credentialId: {
@@ -21,7 +20,14 @@ var schema = mongoose.Schema({
     socialMediaAccounts: {
         type: Array,
         require: false
-    }
+    },
+    teachers: [
+        {
+            startDate: Date,
+            endDate: Date,
+            teacherId: { type: mongoose.Types.ObjectId, ref: "teacher" },
+        }
+    ],
 },
     {
         timestamps: true,

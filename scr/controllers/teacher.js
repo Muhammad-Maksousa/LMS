@@ -1,5 +1,6 @@
 const TeacherService = require("../services/teacher");
 const CredentialService = require("../services/credential");
+const JoinRequistsService = require("../services/joinRequists");
 const Roles = require("../helpers/roles");
 var mongoose = require('mongoose');
 const { responseSender, updateResponseSender, ResponseSenderWithToken } = require("../helpers/wrappers/response-sender");
@@ -20,6 +21,7 @@ module.exports = {
             });
         }
         const teacher = await new TeacherService({ ...body }).add();
+        await new JoinRequistsService({}).teacherToPlatform(teacher.id);
         responseSender(res, teacher);
     },
     update: async (req, res) => {
@@ -43,17 +45,23 @@ module.exports = {
     login: async (req, res) => {
         const { body } = req;
         const credential = await new CredentialService({ ...body }).login();
-        const user = await new TeacherService({}).login(credential);
-        ResponseSenderWithToken(res, user.info, user.token);
+        const teacher = await new TeacherService({}).login(credential);
+        ResponseSenderWithToken(res, teacher.info, teacher.token);
     },
     getProfile: async (req, res) => {
         const { id } = req.params;
-        console.log("teacherId "+ id);
+        console.log("teacherId " + id);
         const Teacher = await new TeacherService({}).getProfile(id);
         responseSender(res, Teacher);
     },
     getAll: async (req, res) => {
         const teachers = await new TeacherService({}).getAll();
         responseSender(res, teachers);
+    },
+    joinToInstitute: async (req, res) => {
+        const { teacherId } = req;
+        const { instituteId } = req.params;
+        await new JoinRequistsService({}).teacherToInstitute(teacherId, instituteId);
+        responseSender(res, "Your Requist Has Been Sent");
     }
 };

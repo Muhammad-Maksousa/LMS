@@ -10,5 +10,6 @@ router.post("/login", apiHandler(controller.login));
 router.put("/",apiHandler(verifyTeacherToken) ,upload.any(), apiHandler(controller.update));
 router.get("/profile/:id",apiHandler(controller.getProfile));
 router.get("/all",apiHandler(controller.getAll));
+router.get("/join/:instituteId",apiHandler(verifyTeacherToken),apiHandler(controller.joinToInstitute));
 
 module.exports = router;
