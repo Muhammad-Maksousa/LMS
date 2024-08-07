@@ -3,12 +3,13 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const secretKey = require("../helpers/db/config.secret");
 class InstituteService {
-    constructor({ credentialId, name, image, socialMediaAccounts,teachers}) {
+    constructor({ credentialId, name, image, socialMediaAccounts,teachers,location}) {
         this.credentialId = credentialId;
         this.name = name;
         this.image = image;
         this.socialMediaAccounts = socialMediaAccounts;
         this.teachers = teachers;
+        this.location = location;
     }
     async add() {
         const institute = new Institute({
@@ -16,7 +17,9 @@ class InstituteService {
             name: this.name,
             image: this.image,
             socialMediaAccounts: this.socialMediaAccounts,
-            teachers:this.teachers
+            teachers:this.teachers,
+            location:this.location,
+            wallet:this.wallet
         });
         return await institute.save();
     }

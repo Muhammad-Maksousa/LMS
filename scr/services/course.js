@@ -22,7 +22,7 @@ class CourseService {
         return await Course.find({ Teacher_ID: { $in: [teacherId] } });
     }
     async getAllUsersOfCourse(id) {
-        return await Course.findById(id).populate("users.enrolledCourses");// tryimg to get a course and all users enrolled in it
+        return await Course.findById(id).populate({path:"users.enrolledCourses"});// tryimg to get a course and all users enrolled in it
     }
 }
 module.exports = CourseService;

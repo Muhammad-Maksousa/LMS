@@ -9,6 +9,10 @@ var schema = mongoose.Schema({
         type: String,
         required: true,
     },
+    location: {
+        type: String,
+        required: false,
+    },
     image: {
         type: String,
         required: false,
