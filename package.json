@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "scr/server.js",
   "scripts": {
-    "dev": "nodemon ./scr/server.js",
+    "dev": "nodemon ./src/server.js",
     "seed": "node ./seeders/init.js",
     "start": "node ./scr/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
