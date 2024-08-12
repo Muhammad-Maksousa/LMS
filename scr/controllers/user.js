@@ -9,6 +9,7 @@ const {
 const moment = require("moment");
 const User = require("../models/user");
 const Course = require("../models/course");
+const JoinRequistsService = require("../services/joinRequists");
 module.exports = {
   add: async (req, res) => {
     const { body } = req;
@@ -136,5 +137,18 @@ module.exports = {
     const rate = await new CourseService({}).rate(body);
     await new CourseService({}).updateRate(body.courseId);
     responseSender(res, rate);
+  },
+  joinScholarship: async (req, res) => {
+    const { userId } = req;
+    const instituteId   = req.params.id;
+    const scholarshipId = req.params.scholarshipId
+    const isAdd = await new JoinRequistsService({}).userToInstituteByGrant(
+      userId,
+      instituteId,
+      scholarshipId
+    );
+    if (isAdd) responseSender(res, "Your Requist Has Been Sent");
+    else
+      responseSender(res, "You have already registered for the scholarship.");
   },
 };

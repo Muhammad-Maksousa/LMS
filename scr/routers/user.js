@@ -10,6 +10,7 @@ router.put("/update/:id",apiHandler(verifyUserToken),upload.single("image"),apiH
 router.post("/enroll/:courseId",apiHandler(verifyUserToken),apiHandler(controller.enroll));
 router.post("/finishedCourse/:courseId",apiHandler(verifyUserToken),apiHandler(controller.finishedCourse));
 router.post("/rate/:courseId",apiHandler(verifyUserToken),apiHandler(controller.rate));
+router.post("/joinScholarship/:id/:scholarshipId",apiHandler(verifyUserToken),apiHandler(controller.joinScholarship))
 
 router.get("/finishedCourses",apiHandler(verifyUserToken),apiHandler(controller.getMyFinishedCourses));
 router.get("/enrolledCourses",apiHandler(verifyUserToken),apiHandler(controller.getMyEnrolledCourses));

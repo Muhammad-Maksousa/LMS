@@ -2,6 +2,8 @@ const Institute = require("../models/institute");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const secretKey = require("../helpers/db/config.secret");
+const Scholarship = require("../models/Scholarship");
+const JoinRequists = require("../models/joinRequists");
 class InstituteService {
     constructor({ credentialId, name, image, socialMediaAccounts,teachers,location}) {
         this.credentialId = credentialId;
@@ -61,6 +63,21 @@ class InstituteService {
     };
     async getMyTeachers(instituteId){
         return await Institute.findById(instituteId).populate("teachers.teacherId").select("teachers");
+    };
+    async acceptStudenet(instituteId,scholarshipId,userId,approve){
+       if(!approve){
+          return false
+       }
+       else{
+        const scholarship = await Scholarship.findById(scholarshipId)
+        const endSubscription = scholarship.EndDate
+        let student = {
+            studentId:userId,
+            endDate : endSubscription
+        }
+        await Institute.findByIdAndUpdate(instituteId,{ $push: { studentScholarship: student } },{ new: true });
+        return true   
+    } 
     };
 }
 
