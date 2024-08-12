@@ -19,4 +19,5 @@ router.get("/wishlist/:courseId",apiHandler(verifyUserToken),apiHandler(controll
 router.get("/wishlist",apiHandler(verifyUserToken),apiHandler(controller.getWishList));
 router.delete("/wishlist/:courseId",apiHandler(verifyUserToken),apiHandler(controller.deleteFromWishList));
 router.patch("/course/progress/:courseId",apiHandler(verifyUserToken),apiHandler(controller.addToProgress));
+router.get("/subscripeToInstitute/:id",apiHandler(verifyUserToken),apiHandler(controller.SubscribeToInstitute))
 module.exports = router;

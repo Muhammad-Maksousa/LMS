@@ -41,6 +41,24 @@ var schema = mongoose.Schema(
         endDate: Date,
       },
     ],
+    myStudent: [
+      {
+        studentId: { type: mongoose.Types.ObjectId, ref: "user" },
+        startDate: { type: Date, default: Date.now },
+      },
+    ],
+    paidStudent: [
+      {
+        studentId: { type: mongoose.Types.ObjectId, ref: "user" },
+        endDate: {
+          type: Date,
+          default: function () {
+            return new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
+          },
+        },
+      },
+    ],
+    cost: { type: Number, default: 0 },
   },
   {
     timestamps: true,

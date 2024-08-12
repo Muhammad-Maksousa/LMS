@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 const secretKey = require("../helpers/db/config.secret");
 const mongoose = require("mongoose");
 const Course = require("../models/course");
+const Institute = require("../models/institute");
 class UserService {
   constructor({
     firstName,
@@ -155,6 +156,39 @@ class UserService {
       runValidators: true,
     });
     return courseProgress;
+  }
+  async subscribeToInstitute(studentId, instituteId) {
+    const isExist = await Institute.findOne({
+      _id: instituteId,
+      $or: [
+        { "studentScholarship.studentId": studentId },
+        { "myStudent.studentId": studentId },
+        { "paidStudent.studentId": studentId },
+      ],
+    });
+    if (isExist) {
+      return 0;
+    } else {
+      const institute = await Institute.findById(instituteId).lean();
+      const student = await User.findById(studentId).lean();
+      const cost = institute.cost;
+      const studentWallet = student.wallet;
+      console.log("the cost of institute id: " + cost);
+      console.log("the wallet of student id: " + studentWallet);
+      if (studentWallet - cost >= 0) {
+        await Institute.findByIdAndUpdate(
+          instituteId,
+          { $push: { paidStudent: studentId } },
+          { new: true }
+        );
+        await User.findByIdAndUpdate(
+          studentId,
+          { $inc: { wallet: -cost } },
+          { new: true }
+        );
+        return 1;
+      } else return 2;
+    }
   }
 }
 

@@ -140,8 +140,8 @@ module.exports = {
   },
   joinScholarship: async (req, res) => {
     const { userId } = req;
-    const instituteId   = req.params.id;
-    const scholarshipId = req.params.scholarshipId
+    const instituteId = req.params.id;
+    const scholarshipId = req.params.scholarshipId;
     const isAdd = await new JoinRequistsService({}).userToInstituteByGrant(
       userId,
       instituteId,
@@ -150,5 +150,18 @@ module.exports = {
     if (isAdd) responseSender(res, "Your Requist Has Been Sent");
     else
       responseSender(res, "You have already registered for the scholarship.");
+  },
+  SubscribeToInstitute: async (req, res) => {
+    const { userId } = req;
+    const instituteId = req.params.id;
+    const result = await new UserService({}).subscribeToInstitute(
+      userId,
+      instituteId
+    );
+    if (result === 1)
+      responseSender(res, "you became a student at the institution");
+    else if (result === 0)
+      responseSender(res, "you already member in institute");
+    else if (result === 2) responseSender(res, "you don't have enough money");
   },
 };

@@ -22,19 +22,19 @@ module.exports = {
     responseSender(res, institute);
   },
   update: async (req, res) => {
-    const { id: instituteId } = req.params;
-    const { body } = req;
-    if (req.file) body.image = req.file.filename;
+    const {  instituteId } = req;
+    const  body  = req.body;
+    if (req.body.file) body.image = req.body.file.filename;
     if (body.password || body.email) {
-      const institute = await new InstituteService({}).getProfile(teacherId);
       await new CredentialService({ ...body }).changeCredential(
         institute.credentialId
       );
+      //const institute = await new InstituteService({}).getProfile(instituteId);
     }
     const updatedInstitute = await new InstituteService({ ...body }).update(
-      instituteId
+      instituteId,body
     );
-    updateResponseSender(res, "teacher");
+    updateResponseSender(res, "institute");
   },
   login: async (req, res) => {
     const { body } = req;
@@ -43,8 +43,9 @@ module.exports = {
     ResponseSenderWithToken(res, user.info, user.token);
   },
   getProfile: async (req, res) => {
-    const { id } = req.params;
-    const institute = await new InstituteService({}).getProfile(id);
+    const {  instituteId } = req;
+    console.log(instituteId)
+    const institute = await new InstituteService({}).getProfile(instituteId);
     responseSender(res, institute);
   },
   getAll: async (req, res) => {
@@ -99,7 +100,7 @@ module.exports = {
     console.log("scholarshipId" + scholarshipId);
     console.log("userId" + userId);
     console.log("approve is : " + approve);
-    const isApprove = await new InstituteService({}).acceptStudenet(
+    const isApprove = await new InstituteService({}).acceptScholarshipStudenet(
       convertedInstituteId,
       scholarshipId,
       userId,
@@ -110,8 +111,28 @@ module.exports = {
       scholarshipId,
       userId
     );
-    if (isApprove)
-      responseSender(res, "the student add to insitute succeccful");
-    else responseSender(res, "the join Request Rejected Successfuly ");
+    if (isApprove===1)
+      responseSender(res, "the student add to insitute successfully");
+    else if(isApprove===0) responseSender(res, "the join Request Rejected successfully ");
+    else if(isApprove===2) responseSender(res,"the student already member in institute")
   },
+  deleteScholarshipStudent: async(req,res)=>{
+    const {instituteId} = req
+    const usersId = req.body.usersId
+    await new InstituteService({}).removeScholarshipStudent(instituteId,usersId);
+    responseSender(res," the student remove successfully")
+  },
+  addMyStudent: async(req,res)=>{
+    const {instituteId}=req
+    const usersId= req.body.usersId
+    const result = await new InstituteService({}).addMystudent(instituteId,usersId)
+    if(result) responseSender(res,"the student added successfully")
+    else responseSender(res,"the student already member in institute")
+  },
+  deleteMyStudent:async(req,res)=>{
+    const {instituteId} = req
+    const usersId= req.body.usersId
+    await new InstituteService ({}).deleteMyStudent(instituteId,usersId)
+    responseSender(res,"the student remove successfully")
+  }
 };
