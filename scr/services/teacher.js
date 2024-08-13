@@ -1,4 +1,5 @@
 const Teacher = require("../models/teacher");
+const Institute = require("../models/institute");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const secretKey = require("../helpers/db/config.secret");
@@ -52,6 +53,9 @@ class TeacherService {
     }
     async getAll() {
         return await Teacher.find();
+    }
+    async getmyInstitutes(teacherId){
+        return await Institute.find({ "teachers.teacherId": teacherId });
     }
 }
 

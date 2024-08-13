@@ -198,6 +198,7 @@ class InstituteService {
         }
       );
   }
+<<<<<<< HEAD
   async deleteSubscripStudent(instituteId,studentId){
     const result = await Institute.updateOne(
       { _id: instituteId }, // Find the institute by its ID
@@ -207,6 +208,13 @@ class InstituteService {
         },
       }
     );
+=======
+  async oneOfMyTeachers(teacherId,instituteId){
+    return await Institute.find({"_id":instituteId,"teachers.teacherId":teacherId});
+  }
+  async acceptCourse(instituteId,courseId,status){
+    
+>>>>>>> d192c03a5a87dc3a9b762792b5bcac24936c97d2
   }
 }
 

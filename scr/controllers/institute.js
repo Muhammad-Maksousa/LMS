@@ -11,6 +11,9 @@ const {
   ResponseSenderWithToken,
 } = require("../helpers/wrappers/response-sender");
 const { getScholarship } = require("./scholarship");
+const CourseService = require("../services/course");
+const CustomError = require("../helpers/errors/custom-errors");
+const errors = require("../helpers/errors/errors.json");
 module.exports = {
   add: async (req, res) => {
     let { body } = req;
@@ -22,8 +25,8 @@ module.exports = {
     responseSender(res, institute);
   },
   update: async (req, res) => {
-    const {  instituteId } = req;
-    const  body  = req.body;
+    const { instituteId } = req;
+    const body = req.body;
     if (req.body.file) body.image = req.body.file.filename;
     if (body.password || body.email) {
       await new CredentialService({ ...body }).changeCredential(
@@ -32,7 +35,7 @@ module.exports = {
       //const institute = await new InstituteService({}).getProfile(instituteId);
     }
     const updatedInstitute = await new InstituteService({ ...body }).update(
-      instituteId,body
+      instituteId, body
     );
     updateResponseSender(res, "institute");
   },
@@ -43,8 +46,7 @@ module.exports = {
     ResponseSenderWithToken(res, user.info, user.token);
   },
   getProfile: async (req, res) => {
-    const {  instituteId } = req;
-    console.log(instituteId)
+    const { instituteId } = req.params;
     const institute = await new InstituteService({}).getProfile(instituteId);
     responseSender(res, institute);
   },
@@ -95,7 +97,7 @@ module.exports = {
     const { instituteId } = req;
     const scholarshipId = req.params.id;
     const userId = req.body.userId;
-    const approve =  req.body.approve;
+    const approve = req.body.approve;
     const convertedInstituteId = instituteId.toString();
     console.log("scholarshipId" + scholarshipId);
     console.log("userId" + userId);
@@ -111,24 +113,25 @@ module.exports = {
       scholarshipId,
       userId
     );
-    if (isApprove===1)
+    if (isApprove === 1)
       responseSender(res, "the student add to insitute successfully");
-    else if(isApprove===0) responseSender(res, "the join Request Rejected successfully ");
-    else if(isApprove===2) responseSender(res,"the student already member in institute")
+    else if (isApprove === 0) responseSender(res, "the join Request Rejected successfully ");
+    else if (isApprove === 2) responseSender(res, "the student already member in institute")
   },
-  deleteScholarshipStudent: async(req,res)=>{
-    const {instituteId} = req
+  deleteScholarshipStudent: async (req, res) => {
+    const { instituteId } = req
     const usersId = req.body.usersId
-    await new InstituteService({}).removeScholarshipStudent(instituteId,usersId);
-    responseSender(res," the student remove successfully")
+    await new InstituteService({}).removeScholarshipStudent(instituteId, usersId);
+    responseSender(res, " the student remove successfully")
   },
-  addMyStudent: async(req,res)=>{
-    const {instituteId}=req
-    const usersId= req.body.usersId
-    const result = await new InstituteService({}).addMystudent(instituteId,usersId)
-    if(result) responseSender(res,"the student added successfully")
-    else responseSender(res,"the student already member in institute")
+  addMyStudent: async (req, res) => {
+    const { instituteId } = req
+    const usersId = req.body.usersId
+    const result = await new InstituteService({}).addMystudent(instituteId, usersId)
+    if (result) responseSender(res, "the student added successfully")
+    else responseSender(res, "the student already member in institute")
   },
+<<<<<<< HEAD
   deleteMyStudent:async(req,res)=>{
     const {instituteId} = req
     const usersId= req.body.usersId
@@ -140,5 +143,24 @@ module.exports = {
     const usersId = req.body.usersId
     await new InstituteService ({}).deleteSubscripStudent(instituteId,usersId)
     responseSender(res,"the student remove successfully")
+=======
+  deleteMyStudent: async (req, res) => {
+    const { instituteId } = req
+    const usersId = req.body.usersId
+    await new InstituteService({}).deleteMyStudent(instituteId, usersId)
+    responseSender(res, "the student remove successfully")
+  },
+  acceptCourse: async (req, res) => {
+    const { instituteId } = req;
+    const { body } = req;
+    const updatedCourse = await new CourseService({}).changeStatus(body.courseId,body.status);
+    await new JoinRequistsService({}).removeCourseToInstituteRequist(instituteId, body.courseId);
+    responseSender(res, updatedCourse);
+  },
+  getAllCoursesRequists:async (req,res)=>{
+    const {instituteId} = req;
+    const requists = await new JoinRequistsService({}).getAllCoursesRequists(instituteId);
+    responseSender(res,requists);
+>>>>>>> d192c03a5a87dc3a9b762792b5bcac24936c97d2
   }
 };
