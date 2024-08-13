@@ -1,6 +1,7 @@
 const { responseSender, updateResponseSender, ResponseSenderWithToken } = require("../helpers/wrappers/response-sender");
 const Course = require("./../models/course");
 const CourseService = require("../services/course");
+const JoinRequistsService = require("../services/joinRequists");
 const ApiFeatuers = require("./../services/ApiFeatuers");
 module.exports = {
   getAllCourse: async (req, res) => {
@@ -29,13 +30,15 @@ module.exports = {
     });
   },
   createCourse: async (req, res) => {
-    const newCourse = await Course.create(req.body);
-    res.status(201).json({
-      status: "success",
-      data: {
-        newCourse,
-      },
-    });
+    let { body } = req;
+    const { teacherId } = req;
+    body.Teacher_ID = [teacherId];
+    let newCourse = await Course.create(req.body);
+    if(body.instituteId){
+      await new JoinRequistsService({}).addCourse(teacherId,body.instituteId,newCourse.id);
+      newCourse =  await Course.findByIdAndUpdate(newCourse.id,{status:'pending'},{new:true});
+    }
+    responseSender(res, newCourse);
   },
   deleteCourse: async (req, res) => {
     await Course.findByIdAndDelete(req.params.id);

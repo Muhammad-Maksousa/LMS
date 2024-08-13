@@ -69,7 +69,7 @@ class JoinRequistsService {
 
     return result;
   }
-  async remveUserToInstituteByGrant(instituteId,scholarshipId,userId){
+  async remveUserToInstituteByGrant(instituteId, scholarshipId, userId) {
     return await JoinRequists.findOneAndUpdate(
       {
         "userToInstituteByGrant.instituteId": instituteId,
@@ -78,8 +78,18 @@ class JoinRequistsService {
       {
         $pull: { "userToInstituteByGrant.userId": userId }
       },
-      { new: true } 
+      { new: true }
     );
+  };
+  async addCourse(teacherId, instituteId, courseId) {
+    const joinrequist = new JoinRequists({
+      courseToInstitute: {
+        teacherId: teacherId,
+        instituteId: instituteId,
+        courseId: courseId
+      }
+    });
+    return await joinrequist.save();
   }
 }
 module.exports = JoinRequistsService;

@@ -53,12 +53,20 @@ const courseSchema = mongoose.Schema({
     type: mongoose.Types.ObjectId,
     ref: "teacher",
   }],
+  instituteId: {
+    type: mongoose.Types.ObjectId,
+    ref: "institute",
+  },
   Categories: {
     type: String,
   },
   plan: Array,
   subtitle: {
     type: String,
+  },
+  status: {
+    type: String,
+    default:'public'
   },
   video: [{
     type: mongoose.Types.ObjectId,
