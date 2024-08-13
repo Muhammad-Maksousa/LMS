@@ -1,11 +1,21 @@
-const { responseSender, updateResponseSender, ResponseSenderWithToken } = require("../helpers/wrappers/response-sender");
+const {
+  responseSender,
+  updateResponseSender,
+  ResponseSenderWithToken,
+} = require("../helpers/wrappers/response-sender");
 const Course = require("./../models/course");
 const CourseService = require("../services/course");
 const JoinRequistsService = require("../services/joinRequists");
 const ApiFeatuers = require("./../services/ApiFeatuers");
 module.exports = {
   getAllCourse: async (req, res) => {
-    const featuers = new ApiFeatuers(Course.find().populate('video').populate('article').populate('quiz'), req.query)
+    const featuers = new ApiFeatuers(
+      Course.find({ $or: [{ status: "public" }, { status: "private" }] })
+        .populate("video")
+        .populate("article")
+        .populate("quiz"),
+      req.query
+    )
       .filter()
       .sort()
       .limitField()
@@ -21,7 +31,10 @@ module.exports = {
     });
   },
   getCourse: async (req, res) => {
-    const course = await Course.findById(req.params.id).populate('video').populate('article').populate('quiz');
+    const course = await Course.findById(req.params.id)
+      .populate("video")
+      .populate("article")
+      .populate("quiz");
     res.status(200).json({
       status: "sucsess",
       data: {
@@ -34,9 +47,17 @@ module.exports = {
     const { teacherId } = req;
     body.Teacher_ID = [teacherId];
     let newCourse = await Course.create(req.body);
-    if(body.instituteId){
-      await new JoinRequistsService({}).addCourse(teacherId,body.instituteId,newCourse.id);
-      newCourse =  await Course.findByIdAndUpdate(newCourse.id,{status:'pending'},{new:true});
+    if (body.instituteId) {
+      await new JoinRequistsService({}).addCourse(
+        teacherId,
+        body.instituteId,
+        newCourse.id
+      );
+      newCourse = await Course.findByIdAndUpdate(
+        newCourse.id,
+        { status: "pending" },
+        { new: true }
+      );
     }
     responseSender(res, newCourse);
   },
@@ -57,14 +78,24 @@ module.exports = {
       data: { course },
     });
   },
-  getAllCoursesByTeacherId:async (req,res)=>{
+  getAllCoursesByTeacherId: async (req, res) => {
     const { teacherId } = req.params;
-    const courses = await new CourseService({}).getAllCoursesByTeacherId(teacherId);
-    responseSender(res,courses);
+    const courses = await new CourseService({}).getAllCoursesByTeacherId(
+      teacherId
+    );
+    responseSender(res, courses);
   },
-  getAllUsersOfCourse:async (req,res)=>{
-    const {id} = req.params;
+  getAllUsersOfCourse: async (req, res) => {
+    const { id } = req.params;
     const users = await new CourseService({}).getAllUsersOfCourse(id);
-    responseSender(res,users);
-  }
+    responseSender(res, users);
+  },
+  getAllCousreByInstitute: async (req, res) => {
+    const instituteId = req.params.id;
+    const result = await new CourseService({}).getInstituteCourse(instituteId);
+    res.status(200).json({
+      status: "success",
+      data: { result },
+    });
+  },
 };

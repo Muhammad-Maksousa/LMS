@@ -165,7 +165,7 @@ class UserService {
         { "myStudent.studentId": studentId },
         { "paidStudent.studentId": studentId },
       ],
-    });
+    }).lean();
     if (isExist) {
       return 0;
     } else {
@@ -176,9 +176,13 @@ class UserService {
       console.log("the cost of institute id: " + cost);
       console.log("the wallet of student id: " + studentWallet);
       if (studentWallet - cost >= 0) {
+        let student1= {
+          studentId:studentId,
+          endDate: Date.now() + 365 * 24 * 60 * 60 * 100
+        }
         await Institute.findByIdAndUpdate(
           instituteId,
-          { $push: { paidStudent: studentId } },
+          { $push: { paidStudent: student1 } },
           { new: true }
         );
         await User.findByIdAndUpdate(

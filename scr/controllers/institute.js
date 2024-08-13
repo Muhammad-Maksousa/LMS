@@ -134,5 +134,11 @@ module.exports = {
     const usersId= req.body.usersId
     await new InstituteService ({}).deleteMyStudent(instituteId,usersId)
     responseSender(res,"the student remove successfully")
+  },
+  deleteSubscripStudent: async(req,res)=>{
+    const {instituteId} = req
+    const usersId = req.body.usersId
+    await new InstituteService ({}).deleteSubscripStudent(instituteId,usersId)
+    responseSender(res,"the student remove successfully")
   }
 };

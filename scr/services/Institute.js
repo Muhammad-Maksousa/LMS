@@ -198,6 +198,16 @@ class InstituteService {
         }
       );
   }
+  async deleteSubscripStudent(instituteId,studentId){
+    const result = await Institute.updateOne(
+      { _id: instituteId }, // Find the institute by its ID
+      {
+        $pull: {
+          paidStudent: { studentId: { $in: studentId } },
+        },
+      }
+    );
+  }
 }
 
 module.exports = InstituteService;

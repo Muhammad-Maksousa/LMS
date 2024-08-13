@@ -12,4 +12,5 @@ router
 .patch(apiHandler(course.updateCourse));
 router.get("/allByTeacher",apiHandler(course.getAllCoursesByTeacherId));
 router.get("/getallUsersOfCourse/:id",apiHandler(course.getAllUsersOfCourse));
+router.get("/instituteCourse/:id",apiHandler(course.getAllCousreByInstitute))
 module.exports = router;
