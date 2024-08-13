@@ -131,7 +131,6 @@ module.exports = {
     if (result) responseSender(res, "the student added successfully")
     else responseSender(res, "the student already member in institute")
   },
-<<<<<<< HEAD
   deleteMyStudent:async(req,res)=>{
     const {instituteId} = req
     const usersId= req.body.usersId
@@ -143,24 +142,18 @@ module.exports = {
     const usersId = req.body.usersId
     await new InstituteService ({}).deleteSubscripStudent(instituteId,usersId)
     responseSender(res,"the student remove successfully")
-=======
-  deleteMyStudent: async (req, res) => {
-    const { instituteId } = req
-    const usersId = req.body.usersId
-    await new InstituteService({}).deleteMyStudent(instituteId, usersId)
-    responseSender(res, "the student remove successfully")
   },
-  acceptCourse: async (req, res) => {
-    const { instituteId } = req;
-    const { body } = req;
-    const updatedCourse = await new CourseService({}).changeStatus(body.courseId,body.status);
-    await new JoinRequistsService({}).removeCourseToInstituteRequist(instituteId, body.courseId);
-    responseSender(res, updatedCourse);
-  },
-  getAllCoursesRequists:async (req,res)=>{
-    const {instituteId} = req;
-    const requists = await new JoinRequistsService({}).getAllCoursesRequists(instituteId);
-    responseSender(res,requists);
->>>>>>> d192c03a5a87dc3a9b762792b5bcac24936c97d2
-  }
+    acceptCourse: async (req, res) => {
+      const { instituteId } = req;
+      const { body } = req;
+      const updatedCourse = await new CourseService({}).changeStatus(body.courseId,body.status);
+      await new JoinRequistsService({}).removeCourseToInstituteRequist(instituteId, body.courseId);
+      responseSender(res, updatedCourse);
+    },
+    getAllCoursesRequists:async (req,res)=>{
+      const {instituteId} = req;
+      const requists = await new JoinRequistsService({}).getAllCoursesRequists(instituteId);
+      responseSender(res,requists);
+    }
+  
 };

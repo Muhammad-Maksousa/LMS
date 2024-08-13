@@ -49,34 +49,28 @@ module.exports = {
     let { body } = req;
     const { teacherId } = req;
     body.Teacher_ID = [teacherId];
-<<<<<<< HEAD
-    let newCourse = await Course.create(req.body);
-    if (body.instituteId) {
-      await new JoinRequistsService({}).addCourse(
-        teacherId,
-        body.instituteId,
-        newCourse.id
-      );
-      newCourse = await Course.findByIdAndUpdate(
-        newCourse.id,
-        { status: "pending" },
-        { new: true }
-      );
-    }
-=======
+
     let newCourse;
     if (body.instituteId) {
-      let canAddCourse = await new InstituteService({}).oneOfMyTeachers(teacherId, body.instituteId);
+      let canAddCourse = await new InstituteService({}).oneOfMyTeachers(
+        teacherId,
+        body.instituteId
+      );
       if (canAddCourse.length > 0) {
         newCourse = await Course.create(req.body);
-        await new JoinRequistsService({}).addCourse(body.instituteId, newCourse.id);
-        newCourse = await Course.findByIdAndUpdate(newCourse.id, { status: 'pending' }, { new: true });
+        await new JoinRequistsService({}).addCourse(
+          body.instituteId,
+          newCourse.id
+        );
+        newCourse = await Course.findByIdAndUpdate(
+          newCourse.id,
+          { status: "pending" },
+          { new: true }
+        );
       } else {
         throw new CustomError(errors.You_Can_Not_Do_This);
       }
-    } else
-      newCourse = await Course.create(req.body);
->>>>>>> d192c03a5a87dc3a9b762792b5bcac24936c97d2
+    } else newCourse = await Course.create(req.body);
     responseSender(res, newCourse);
   },
   deleteCourse: async (req, res) => {
@@ -98,20 +92,15 @@ module.exports = {
   },
   getAllCoursesByTeacherId: async (req, res) => {
     const { teacherId } = req.params;
-<<<<<<< HEAD
     const courses = await new CourseService({}).getAllCoursesByTeacherId(
       teacherId
     );
-=======
-    const courses = await new CourseService({}).getAllCoursesByTeacherId(teacherId);
->>>>>>> d192c03a5a87dc3a9b762792b5bcac24936c97d2
     responseSender(res, courses);
   },
   getAllUsersOfCourse: async (req, res) => {
     const { id } = req.params;
     const users = await new CourseService({}).getAllUsersOfCourse(id);
     responseSender(res, users);
-<<<<<<< HEAD
   },
   getAllCousreByInstitute: async (req, res) => {
     const instituteId = req.params.id;
@@ -121,7 +110,4 @@ module.exports = {
       data: { result },
     });
   },
-=======
-  }
->>>>>>> d192c03a5a87dc3a9b762792b5bcac24936c97d2
 };

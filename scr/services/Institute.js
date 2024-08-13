@@ -21,8 +21,8 @@ class InstituteService {
     this.socialMediaAccounts = socialMediaAccounts;
     this.teachers = teachers;
     this.location = location;
-    this.cost =cost
-    this.wallet = wallet
+    this.cost = cost;
+    this.wallet = wallet;
   }
   async add() {
     const institute = new Institute({
@@ -33,7 +33,7 @@ class InstituteService {
       teachers: this.teachers,
       location: this.location,
       wallet: this.wallet,
-      cost: this.cost
+      cost: this.cost,
     });
     return await institute.save();
   }
@@ -188,18 +188,17 @@ class InstituteService {
       console.error("Error adding students to myStudent array:", error);
     }
   }
-  async deleteMyStudent(instituteId,usersId){
+  async deleteMyStudent(instituteId, usersId) {
     await Institute.updateOne(
-        { _id: instituteId }, // Find the institute by its ID
-        {
-          $pull: {
-            myStudent: { studentId: { $in: usersId } },
-          },
-        }
-      );
+      { _id: instituteId }, // Find the institute by its ID
+      {
+        $pull: {
+          myStudent: { studentId: { $in: usersId } },
+        },
+      }
+    );
   }
-<<<<<<< HEAD
-  async deleteSubscripStudent(instituteId,studentId){
+  async deleteSubscripStudent(instituteId, studentId) {
     const result = await Institute.updateOne(
       { _id: instituteId }, // Find the institute by its ID
       {
@@ -208,13 +207,12 @@ class InstituteService {
         },
       }
     );
-=======
-  async oneOfMyTeachers(teacherId,instituteId){
-    return await Institute.find({"_id":instituteId,"teachers.teacherId":teacherId});
   }
-  async acceptCourse(instituteId,courseId,status){
-    
->>>>>>> d192c03a5a87dc3a9b762792b5bcac24936c97d2
+  async oneOfMyTeachers(teacherId, instituteId) {
+    return await Institute.find({
+      _id: instituteId,
+      "teachers.teacherId": teacherId,
+    });
   }
 }
 
