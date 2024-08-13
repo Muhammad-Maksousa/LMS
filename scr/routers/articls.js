@@ -3,7 +3,7 @@ const router = express.Router();
 const article = require("./../controllers/articls");
 const apiHandler = require("./../helpers/wrappers/api-handler");
 const upload = require("../helpers/uplodSingleArticle");
-router.route("/all").get(apiHandler(article.getAllAtricles));
+router.route("/all/:id").get(apiHandler(article.getAllAtricles));
 router
   .route("/")
   .post(upload.single("path_file"), apiHandler(article.addArticle));

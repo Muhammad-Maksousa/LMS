@@ -5,17 +5,18 @@ const {
   responseSender,
   updateResponseSender,
 } = require("./../helpers/wrappers/response-sender");
+const Course = require("./../models/course")
 module.exports = {
   addArticle: async (req, res) => {
     let newArticle = { ...req.body };
-    newArticle.path_file =
-      "C:\\Users\\Eam Kadry\\Desktop\\ITE 4th\\مشروع 1\\LMS\\public\\article\\" +
-      req.file.filename;
+    newArticle.path_file =path.resolve(__dirname,'..','..','public','article',req.file.filename)
+      
     newArticle = await Article.create(newArticle);
     responseSender(res, newArticle);
   },
   getAllAtricles: async (req, res) => {
-    const articles = await Article.find();
+    const courseId = req.params.id
+    const articles = await Course.findById(courseId).select("article").populate("article");
     responseSender(res, articles);
   },
   getArticle: async (req, res) => {
@@ -25,9 +26,6 @@ module.exports = {
   updateArticle: async (req, res) => {
     let article = { ...req.body };
     if (req.file) {
-      article.path_file =
-        "C:\\Users\\Eam Kadry\\Desktop\\ITE 4th\\مشروع 1\\LMS\\public\\article\\" +
-        req.file.filename;
       article1 = await Article.findById(req.params.id);
       await fs.unlink(article1.path_file);
     }
@@ -35,6 +33,8 @@ module.exports = {
       new: true,
       runValdiators: true,
     });
+    article.path_file=path.resolve(__dirname,'..','..','public','article',req.file.filename)
+    await article.save()
 
     res.status(201).json({
       status: "sucsses",

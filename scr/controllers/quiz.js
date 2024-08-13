@@ -3,13 +3,15 @@ const {
     responseSender,
     updateResponseSender,
   } = require("./../helpers/wrappers/response-sender");
+  const Course = require('./../models/course')
   module.exports={
    addQuiz: async(req,res)=>{
     const newQuiz = await Quiz.create(req.body)
     responseSender(res,newQuiz);
    },
    getAllQuiz: async(req,res)=>{
-    const quizes= await Quiz.find().populate('qustions')
+    const courseId = req.params.id
+    const quizes= await Course.findById(courseId).select("quiz").populate('quiz')
     responseSender(res,quizes)
    },
    getQuiz: async(req,res)=>{
