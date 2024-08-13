@@ -201,6 +201,9 @@ class InstituteService {
   async oneOfMyTeachers(teacherId,instituteId){
     return await Institute.find({"_id":instituteId,"teachers.teacherId":teacherId});
   }
+  async acceptCourse(instituteId,courseId,status){
+    
+  }
 }
 
 module.exports = InstituteService;

@@ -61,6 +61,12 @@ class JoinRequistsService {
       "teacherToInstitute.teacherId": teacherId,
     });
   }
+  async removeCourseToInstituteRequist(instituteId,courseId) {
+    return await JoinRequists.findOneAndDelete({
+      "courseToInstitute.instituteId": instituteId,
+      "courseToInstitute.courseId": courseId,
+    });
+  }
   async getScholarshipRequests(instituteId, scholarshipId) {
     const result = await JoinRequists.find({
       "userToInstituteByGrant.instituteId": instituteId,
@@ -81,15 +87,17 @@ class JoinRequistsService {
       { new: true }
     );
   };
-  async addCourse(teacherId, instituteId, courseId) {
+  async addCourse(instituteId, courseId) {
     const joinrequist = new JoinRequists({
       courseToInstitute: {
-        teacherId: teacherId,
         instituteId: instituteId,
         courseId: courseId
       }
     });
     return await joinrequist.save();
-  }
+  };
+  async getAllCoursesRequists(instituteId){
+    return await JoinRequists.find({"courseToInstitute.instituteId":instituteId}); 
+  };
 }
 module.exports = JoinRequistsService;

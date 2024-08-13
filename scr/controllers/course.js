@@ -36,13 +36,12 @@ module.exports = {
     let { body } = req;
     const { teacherId } = req;
     body.Teacher_ID = [teacherId];
-    let canAddCourse = false;
     let newCourse;
     if (body.instituteId) {
-      canAddCourse = await new InstituteService({}).oneOfMyTeachers(teacherId, body.instituteId);
+      let canAddCourse = await new InstituteService({}).oneOfMyTeachers(teacherId, body.instituteId);
       if (canAddCourse.length > 0) {
         newCourse = await Course.create(req.body);
-        await new JoinRequistsService({}).addCourse(teacherId, body.instituteId, newCourse.id);
+        await new JoinRequistsService({}).addCourse(body.instituteId, newCourse.id);
         newCourse = await Course.findByIdAndUpdate(newCourse.id, { status: 'pending' }, { new: true });
       } else {
         throw new CustomError(errors.You_Can_Not_Do_This);

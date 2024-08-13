@@ -24,5 +24,11 @@ class CourseService {
     async getAllUsersOfCourse(id) {
         return await Course.findById(id).populate({path:"users.enrolledCourses"});// tryimg to get a course and all users enrolled in it
     }
+    async getById(id){
+        return await Course.findById(id);
+    }
+    async changeStatus(id,status){
+        return await Course.findByIdAndUpdate(id,{status:status},{new:true});
+    }
 }
 module.exports = CourseService;
