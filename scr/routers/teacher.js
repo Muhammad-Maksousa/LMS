@@ -11,5 +11,6 @@ router.put("/",apiHandler(verifyTeacherToken) ,upload.any(), apiHandler(controll
 router.get("/profile/:id",apiHandler(controller.getProfile));
 router.get("/all",apiHandler(controller.getAll));
 router.get("/join/:instituteId",apiHandler(verifyTeacherToken),apiHandler(controller.joinToInstitute));
+router.get("/myInstitutes",apiHandler(verifyTeacherToken),apiHandler(controller.myInstitutes));
 
 module.exports = router;

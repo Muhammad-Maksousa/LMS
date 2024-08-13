@@ -198,6 +198,9 @@ class InstituteService {
         }
       );
   }
+  async oneOfMyTeachers(teacherId,instituteId){
+    return await Institute.find({"_id":instituteId,"teachers.teacherId":teacherId});
+  }
 }
 
 module.exports = InstituteService;

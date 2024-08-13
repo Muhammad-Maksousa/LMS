@@ -3,6 +3,9 @@ const Course = require("./../models/course");
 const CourseService = require("../services/course");
 const JoinRequistsService = require("../services/joinRequists");
 const ApiFeatuers = require("./../services/ApiFeatuers");
+const InstituteService = require("../services/Institute");
+const CustomError = require("../helpers/errors/custom-errors");
+const errors = require("../helpers/errors/errors.json");
 module.exports = {
   getAllCourse: async (req, res) => {
     const featuers = new ApiFeatuers(Course.find().populate('video').populate('article').populate('quiz'), req.query)
@@ -33,11 +36,19 @@ module.exports = {
     let { body } = req;
     const { teacherId } = req;
     body.Teacher_ID = [teacherId];
-    let newCourse = await Course.create(req.body);
-    if(body.instituteId){
-      await new JoinRequistsService({}).addCourse(teacherId,body.instituteId,newCourse.id);
-      newCourse =  await Course.findByIdAndUpdate(newCourse.id,{status:'pending'},{new:true});
-    }
+    let canAddCourse = false;
+    let newCourse;
+    if (body.instituteId) {
+      canAddCourse = await new InstituteService({}).oneOfMyTeachers(teacherId, body.instituteId);
+      if (canAddCourse.length > 0) {
+        newCourse = await Course.create(req.body);
+        await new JoinRequistsService({}).addCourse(teacherId, body.instituteId, newCourse.id);
+        newCourse = await Course.findByIdAndUpdate(newCourse.id, { status: 'pending' }, { new: true });
+      } else {
+        throw new CustomError(errors.You_Can_Not_Do_This);
+      }
+    } else
+      newCourse = await Course.create(req.body);
     responseSender(res, newCourse);
   },
   deleteCourse: async (req, res) => {
@@ -57,14 +68,14 @@ module.exports = {
       data: { course },
     });
   },
-  getAllCoursesByTeacherId:async (req,res)=>{
+  getAllCoursesByTeacherId: async (req, res) => {
     const { teacherId } = req.params;
     const courses = await new CourseService({}).getAllCoursesByTeacherId(teacherId);
-    responseSender(res,courses);
+    responseSender(res, courses);
   },
-  getAllUsersOfCourse:async (req,res)=>{
-    const {id} = req.params;
+  getAllUsersOfCourse: async (req, res) => {
+    const { id } = req.params;
     const users = await new CourseService({}).getAllUsersOfCourse(id);
-    responseSender(res,users);
+    responseSender(res, users);
   }
 };

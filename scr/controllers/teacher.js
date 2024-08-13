@@ -63,5 +63,10 @@ module.exports = {
         const { instituteId } = req.params;
         await new JoinRequistsService({}).teacherToInstitute(teacherId, instituteId);
         responseSender(res, "Your Requist Has Been Sent");
+    },
+    myInstitutes:async(req,res)=>{
+        const {teacherId} = req;
+        const myInstitutes = await new TeacherService({}).getmyInstitutes(teacherId);
+        responseSender(res,myInstitutes);
     }
 };
