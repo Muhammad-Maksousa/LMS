@@ -20,4 +20,7 @@ router.get("/wishlist",apiHandler(verifyUserToken),apiHandler(controller.getWish
 router.delete("/wishlist/:courseId",apiHandler(verifyUserToken),apiHandler(controller.deleteFromWishList));
 router.patch("/course/progress/:courseId",apiHandler(verifyUserToken),apiHandler(controller.addToProgress));
 router.get("/subscripeToInstitute/:id",apiHandler(verifyUserToken),apiHandler(controller.SubscribeToInstitute))
+router.get("/getAllMessage",apiHandler(verifyUserToken),apiHandler(controller.GetAllMessage))
+router.get("/getMessage/:id",apiHandler(verifyUserToken),apiHandler(controller.getMessage))
+router.delete("/deleteMessage/:id",apiHandler(verifyUserToken),apiHandler(controller.DeleteMessage))
 module.exports = router;

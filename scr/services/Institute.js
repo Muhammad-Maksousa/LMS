@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const secretKey = require("../helpers/db/config.secret");
 const Scholarship = require("../models/Scholarship");
 const JoinRequists = require("../models/joinRequists");
+const User = require("../models/user")
 class InstituteService {
   constructor({
     credentialId,
@@ -88,8 +89,23 @@ class InstituteService {
       .populate("teachers.teacherId")
       .select("teachers");
   }
-  async acceptScholarshipStudenet(instituteId, scholarshipId, userId, approve) {
+  async acceptScholarshipStudenet(instituteId,scholarshipId,userId,approve, reasonOfReject) {
     if (!approve) {
+      const institute = await Institute.findById(instituteId);
+      const scholarship = await Scholarship.findById(scholarshipId);
+      const scholarshipName = scholarship.name 
+      const instituteName = institute.name
+      console.log("scholarshipName : " + scholarshipName);
+      console.log("instituteName : " + instituteName);
+      let message = {
+        instituteName: instituteName,
+        scholarshipName: scholarshipName,
+        theMessage: reasonOfReject,
+      };
+      await User.findByIdAndUpdate(
+        userId,
+        {$push: { message: message }, },
+        {  new: true,  runValidators: true,}  );
       return 0;
     } else {
       const scholarship = await Scholarship.findById(scholarshipId);

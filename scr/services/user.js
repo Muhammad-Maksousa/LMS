@@ -7,6 +7,7 @@ const secretKey = require("../helpers/db/config.secret");
 const mongoose = require("mongoose");
 const Course = require("../models/course");
 const Institute = require("../models/institute");
+const objectId = mongoose.Types.ObjectId
 class UserService {
   constructor({
     firstName,
@@ -173,8 +174,6 @@ class UserService {
       const student = await User.findById(studentId).lean();
       const cost = institute.cost;
       const studentWallet = student.wallet;
-      console.log("the cost of institute id: " + cost);
-      console.log("the wallet of student id: " + studentWallet);
       if (studentWallet - cost >= 0) {
         let student1= {
           studentId:studentId,
@@ -193,6 +192,22 @@ class UserService {
         return 1;
       } else return 2;
     }
+  }
+  async getAllMessage(userId){
+    return await User.findById(userId).select("message")
+  }
+  async deleteMessage(userId,messageId){
+    const objectId = new mongoose.Types.ObjectId(messageId);
+    return await User.findByIdAndUpdate(
+      userId,
+      { $pull: { message: { _id: objectId } } }, // Correct usage of $pull with a condition
+      { new: true } // Return the updated document
+    );
+  }
+  async getMessage(userId,messageId){
+    const user = await User.findById(new objectId(userId));
+    const message = user.message.find(msg => msg._id.toString() === messageId);
+    return message
   }
 }
 

@@ -51,6 +51,11 @@ module.exports = (mongoose) => {
         required: false,
         default:0
     },
+    message:[{
+      instituteName :String,
+      scholarshipName : String,
+      theMessage:String
+    }]
   },
     {
       timestamps: true,
