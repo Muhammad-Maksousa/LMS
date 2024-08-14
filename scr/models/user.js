@@ -25,6 +25,9 @@ module.exports = (mongoose) => {
         type: String,
         required: true,
       },
+      fcm: {
+        type: String
+      },
       image: {
         type: String,
         required: false,

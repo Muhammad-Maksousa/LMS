@@ -1,4 +1,5 @@
 const Course = require("./../models/course");
+const User = require("../models/user");
 const mongoose = require("mongoose");
 const CustomError = require("../helpers/errors/custom-errors");
 const errors = require("../helpers/errors/errors.json");
@@ -36,9 +37,7 @@ class CourseService {
     return await Course.find({ Teacher_ID: { $in: [teacherId] } });
   }
   async getAllUsersOfCourse(id) {
-    return await Course.findById(id).populate({
-      path: "users.enrolledCourses",
-    }); // tryimg to get a course and all users enrolled in it
+    return await User.find({enrolledCourses:{$in:id}}).select(['firstName','lastName']); // tryimg to get a course and all users enrolled in it
   }
   async getInstituteCourse(id) {
     console.log(id)
@@ -93,6 +92,9 @@ async getOneCourse(id){
     }
     console.log(resulte);
     return resulte;
+}
+async getRate(id){
+  return Course.findById(id).select('ratings').populate([{path:"ratings.userId",select:['firstName','lastName']}]);
 }
 }
 module.exports = CourseService;

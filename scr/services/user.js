@@ -18,6 +18,7 @@ class UserService {
     credentialId,
     role,
     wallet,
+    fcm
   }) {
     this.firstName = firstName;
     this.lastName = lastName;
@@ -26,6 +27,7 @@ class UserService {
     this.wallet = wallet;
     this.credentialId = credentialId;
     this.role = role;
+    this.fcm = fcm;
   }
   async add() {
     const user = new User({
@@ -36,6 +38,7 @@ class UserService {
       birthDate: Date.parse(this.birthDate),
       credentialId: this.credentialId,
       role: this.role,
+      fcm:this.fcm
     });
     return await user.save();
   }
@@ -219,6 +222,9 @@ class UserService {
       { path: "userToInstituteByGrant.instituteId", select: ["name"] },
       { path: "userToInstituteByGrant.scholarshipId", select: ["name"] }
   ]);
+};
+async getAll(){
+  return await User.find();
 }
 }
 

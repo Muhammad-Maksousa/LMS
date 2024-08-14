@@ -10,6 +10,7 @@ router.use("/teacher", require("./teacher"));
 router.use("/institute", require("./institute"));
 router.use("/institute/scholarship", require("./scholarship"));
 router.use("/admin", require("./admin"));
+router.use("/notification", require("./notification"));
 //should be in the end of all routers
 router.use("*", (req, res) => {
   res.status(404).json({ message: "The Page Not Found", httpStatusCode: 404 });

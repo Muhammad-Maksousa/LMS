@@ -14,6 +14,9 @@ const { getScholarship } = require("./scholarship");
 const CourseService = require("../services/course");
 const CustomError = require("../helpers/errors/custom-errors");
 const errors = require("../helpers/errors/errors.json");
+const NotificationService = require("../services/notification");
+const TeacherService = require("../services/teacher");
+const UserService = require("../services/user");
 module.exports = {
   add: async (req, res) => {
     let { body } = req;
@@ -70,6 +73,9 @@ module.exports = {
       instituteId,
       body.teacherId
     );
+    const teacher = await new TeacherService({}).getProfile(body.teacherId); 
+    let notification = { 'notification': { title: "Institute reply to your join requist", body: "you have been Accepted" }};
+    await new NotificationService({}).sendNotificationToTeacher(teacher.fcm,notification);
     responseSender(res, resulte);
   },
   rejectTeacherByAdmin:async(req,res)=>{
@@ -78,6 +84,9 @@ module.exports = {
     const message = req.body.message
     await new InstituteService({}).rejectTeacher(instituteId,teacherId,message)
     await new JoinRequistsService({}).removeTeacherToInstituteRequist(instituteId,teacherId)
+    const teacher = await new TeacherService({}).getProfile(body.teacherId); 
+    let notification = { 'notification': { title: "Institute reply to your join requist", body: "you have been Rejected Check your mailBox to know why." }};
+    await new NotificationService({}).sendNotificationToTeacher(teacher.fcm,notification);
     responseSender(res,"the teacher reject successfully")
   },
   teacherToinstituteRequists: async (req, res) => {
@@ -121,12 +130,18 @@ module.exports = {
       scholarshipId,
       userId
     );
-    if (isApprove === 1)
+    const user = await new UserService({}).getProfile(userId); 
+    if (isApprove === 1){
+    let notification = { 'notification': { title: "Institute reply to your join requist", body: "you have been Accepted" }};
+    await new NotificationService({}).sendNotificationToTeacher(user.fcm,notification);
       responseSender(res, "the student add to insitute successfully");
-    else if (isApprove === 0)
+    }else if (isApprove === 0){
+      let notification = { 'notification': { title: "Institute reply to your join requist", body: "you have been Rejected" }};
+    await new NotificationService({}).sendNotificationToTeacher(user.fcm,notification);
       responseSender(res, "the join Request Rejected successfully ");
-    else if (isApprove === 2)
+    }else if (isApprove === 2){
       responseSender(res, "the student already member in institute");
+    }
   },
   deleteScholarshipStudent: async (req, res) => {
     const { instituteId } = req;

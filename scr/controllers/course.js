@@ -13,7 +13,7 @@ const errors = require("../helpers/errors/errors.json");
 module.exports = {
   getAllCourse: async (req, res) => {
     const featuers = new ApiFeatuers(
-      Course.find({ $or: [{ status: "public" }, { status: "private" }] }).select(['name','rate','cost','Categories','status']).populate([{path:"Teacher_ID", select : ['firstName','lastName']}]),
+      Course.find({ $or: [{ status: "public" }, { status: "private" }] }).select(['name', 'rate', 'cost', 'Categories', 'status']).populate([{ path: "Teacher_ID", select: ['firstName', 'lastName'] }]),
       req.query
     )
       .filter()
@@ -31,9 +31,9 @@ module.exports = {
     });
   },
   getCourse: async (req, res) => {
-    const {id} = req.params;
+    const { id } = req.params;
     const course = await new CourseService({}).getOneCourse(id);
-    responseSender(res,course);
+    responseSender(res, course);
   },
   createCourse: async (req, res) => {
     let { body } = req;
@@ -100,4 +100,9 @@ module.exports = {
       data: { result },
     });
   },
+  getRate: async (req, res) => {
+    const { courseId } = req.params;
+    const rate = await new CourseService({}).getRate(courseId);
+    responseSender(res,rate);
+  }
 };
