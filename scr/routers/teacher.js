@@ -12,5 +12,8 @@ router.get("/profile/:id",apiHandler(controller.getProfile));
 router.get("/all",apiHandler(controller.getAll));
 router.get("/join/:instituteId",apiHandler(verifyTeacherToken),apiHandler(controller.joinToInstitute));
 router.get("/myInstitutes",apiHandler(verifyTeacherToken),apiHandler(controller.myInstitutes));
+router.get("/getAllMessage",apiHandler(verifyTeacherToken),apiHandler(controller.getAllMessage))
+router.get("/getMessage/:id",apiHandler(verifyTeacherToken),apiHandler(controller.getMessage))
+router.delete("/deleteMessage/:id",apiHandler(verifyTeacherToken),apiHandler(controller.deleteMessage))
 
 module.exports = router;

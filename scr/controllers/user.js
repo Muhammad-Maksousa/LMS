@@ -180,5 +180,10 @@ module.exports = {
     const messageId = req.params.id
     const result = await new UserService({}).getMessage(userId,messageId)
     responseSender(res,result)
+  },
+  getMyRequest:async(req,res)=>{
+    const {userId}=req;
+    const result = await new UserService({}).getMyRequest(userId);
+    responseSender(res,result)
   }
 };

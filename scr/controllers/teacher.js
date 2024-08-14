@@ -68,5 +68,22 @@ module.exports = {
         const {teacherId} = req;
         const myInstitutes = await new TeacherService({}).getmyInstitutes(teacherId);
         responseSender(res,myInstitutes);
+    },
+    getAllMessage:async(req,res)=>{
+        const {teacherId} = req;
+        const messages = await new TeacherService({}).getAllMessage(teacherId) 
+        responseSender(res,messages)
+    },
+    getMessage:async(req,res)=>{
+        const {teacherId} = req
+        const messageId = req.params.id
+        const message = await new TeacherService({}).getMessage(teacherId,messageId)
+        responseSender(res,message)
+    },
+    deleteMessage: async(req,res)=>{
+        const {teacherId} = req
+        const messageId = req.params.id
+        await new TeacherService({}).deleteMessage(teacherId,messageId)
+        responseSender(res,"the message deleted")
     }
 };

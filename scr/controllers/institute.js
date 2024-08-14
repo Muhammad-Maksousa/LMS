@@ -72,6 +72,14 @@ module.exports = {
     );
     responseSender(res, resulte);
   },
+  rejectTeacherByAdmin:async(req,res)=>{
+    const {instituteId} = req
+    const teacherId = req.body.teacherId
+    const message = req.body.message
+    await new InstituteService({}).rejectTeacher(instituteId,teacherId,message)
+    await new JoinRequistsService({}).removeTeacherToInstituteRequist(instituteId,teacherId)
+    responseSender(res,"the teacher reject successfully")
+  },
   teacherToinstituteRequists: async (req, res) => {
     const { instituteId } = req;
     const resulte = await new JoinRequistsService(

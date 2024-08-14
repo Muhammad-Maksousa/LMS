@@ -4,7 +4,8 @@ const jwt = require("jsonwebtoken");
 const secretKey = require("../helpers/db/config.secret");
 const Scholarship = require("../models/Scholarship");
 const JoinRequists = require("../models/joinRequists");
-const User = require("../models/user")
+const User = require("../models/user");
+const Teacher = require("../models/teacher");
 class InstituteService {
   constructor({
     credentialId,
@@ -84,6 +85,15 @@ class InstituteService {
       { new: true }
     );
   }
+  async rejectTeacher(instituteId,teacherId,theReason){
+    const institute= await Institute.findById(instituteId)
+    const instituteName = institute.name
+    let message ={
+      instituteName:instituteName,
+      theMessage:theReason
+    }
+    return await Teacher.findByIdAndUpdate(teacherId,{$push:{messages:message}},{new:true}) 
+  }
   async getMyTeachers(instituteId) {
     return await Institute.findById(instituteId)
       .populate("teachers.teacherId")
@@ -95,8 +105,6 @@ class InstituteService {
       const scholarship = await Scholarship.findById(scholarshipId);
       const scholarshipName = scholarship.name 
       const instituteName = institute.name
-      console.log("scholarshipName : " + scholarshipName);
-      console.log("instituteName : " + instituteName);
       let message = {
         instituteName: instituteName,
         scholarshipName: scholarshipName,
