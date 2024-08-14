@@ -19,7 +19,7 @@ class CredentialService {
     async changeCredential(id) {
         return await Credential.findByIdAndUpdate(id, {
             email: this.email,
-            password: this.password
+            password: bcrypt.hashSync(this.password, 8),
         }, { new: true });
     }
     async login(){

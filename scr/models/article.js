@@ -5,6 +5,7 @@ const articleSchema = mongoose.Schema({
   author: { type: String },
   category: { type: String },
   createdAt: { type: Date, default: Date.now },
+  order:{type:Number,require:true}
 });
 const Article = mongoose.model("Article", articleSchema);
 module.exports = Article;

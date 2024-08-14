@@ -1,4 +1,6 @@
 const Admin = require("../models/admin");
+const jwt = require("jsonwebtoken");
+const secretKey = require("../helpers/db/config.secret");
 class AdminService{
     constructor({name,image,credentialId}){
         this.name = name;
@@ -17,6 +19,9 @@ class AdminService{
         const admin = await Admin.findOne({ credentialId: cred._id }).populate("credentialId");
         let token = jwt.sign({ adminId: admin._id, role: cred.role }, secretKey, { expiresIn: "30 days" });
         return { info: admin, token: token };
+    };
+    async getProfile(id){
+        return await Admin.findById(id).populate("credentialId");
     }
 }
 module.exports = AdminService;

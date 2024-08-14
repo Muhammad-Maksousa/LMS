@@ -31,5 +31,5 @@ schema.method("toJSON", function () {
     return object;
 });
 
-const Institute = mongoose.model("institute", schema);
-module.exports = Institute;
+const Admin = mongoose.model("admin", schema);
+module.exports = Admin;

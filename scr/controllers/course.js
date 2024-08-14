@@ -13,10 +13,7 @@ const errors = require("../helpers/errors/errors.json");
 module.exports = {
   getAllCourse: async (req, res) => {
     const featuers = new ApiFeatuers(
-      Course.find({ $or: [{ status: "public" }, { status: "private" }] })
-        .populate("video")
-        .populate("article")
-        .populate("quiz"),
+      Course.find({ $or: [{ status: "public" }, { status: "private" }] }).select(['name','rate','cost','Categories','status']).populate([{path:"Teacher_ID", select : ['firstName','lastName']}]),
       req.query
     )
       .filter()
@@ -34,22 +31,15 @@ module.exports = {
     });
   },
   getCourse: async (req, res) => {
-    const course = await Course.findById(req.params.id)
-      .populate("video")
-      .populate("article")
-      .populate("quiz");
-    res.status(200).json({
-      status: "sucsess",
-      data: {
-        course,
-      },
-    });
+    const {id} = req.params;
+    const course = await new CourseService({}).getOneCourse(id);
+    responseSender(res,course);
   },
   createCourse: async (req, res) => {
     let { body } = req;
     const { teacherId } = req;
     body.Teacher_ID = [teacherId];
-
+    if (req.file) body.image = req.file.filename;
     let newCourse;
     if (body.instituteId) {
       let canAddCourse = await new InstituteService({}).oneOfMyTeachers(

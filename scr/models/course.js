@@ -83,7 +83,7 @@ const courseSchema = mongoose.Schema({
   }],
   managment: String,
   what_you_will_learn: String,
-  Image: String,
+  image: String,
 },
   {
     timestamps: true,

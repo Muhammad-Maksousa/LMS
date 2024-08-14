@@ -9,6 +9,7 @@ const quizSchema = mongoose.Schema({
     type: Number,
     default: 100,
   },
+  order:{type:Number,require:true}
 });
 const Quiz = mongoose.model("Quiz", quizSchema);
 module.exports = Quiz;

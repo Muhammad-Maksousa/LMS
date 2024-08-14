@@ -19,7 +19,7 @@ module.exports = {
     let video = { ...req.body };
     if (req.file) {
       video.name_video = req.file.filename;
-      video1 = await Video.findById(req.params.id);
+      let video1 = await Video.findById(req.params.id);
       const filePath = path.resolve(__dirname, '..', '..', 'public', 'video', video1.name_video)
         console.log("video.name_video: "+ video1.name_video)
       console.log("Deleted video file:", filePath);

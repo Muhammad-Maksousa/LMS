@@ -1,7 +1,7 @@
 const user = 'user';
 const teacher = 'teacher';
-const superAdmin = 'superAdmin';
+const admin = 'admin';
 const Institute = 'institute';
 module.exports = {
-    user,teacher,superAdmin,Institute
+    user,teacher,admin,Institute
 };

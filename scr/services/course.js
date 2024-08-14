@@ -54,6 +54,45 @@ class CourseService {
 async changeStatus(id,status){
     return await Course.findByIdAndUpdate(id,{status:status},{new:true});
 }
-
+async getOneCourse(id){
+    const course = await Course.findById(id).populate("video").populate("article").populate("quiz");
+    let resulte = []
+    let lengthOfAllInfo = course.article.length + course.video.length + course.quiz.length;
+    //name,id,type
+    for(let i=1;i<+lengthOfAllInfo;i++){
+      course.video.forEach(video => {
+        if(video.order==i){
+          let item = {
+            id:video.id,
+            name:video.name,
+            type:'video'
+          }
+          resulte.push(item);
+        }
+      });
+      course.article.forEach(article => {
+        if(article.order==i){
+          let item = {
+            id:article.id,
+            name:article.name,
+            type:'article'
+          }
+          resulte.push(item);
+        }
+      });
+      course.quiz.forEach(quiz => {
+        if(quiz.order==i){
+          let item = {
+            id:quiz.id,
+            name:quiz.name,
+            type:'quiz'
+          }
+          resulte.push(item);
+        }
+      });
+    }
+    console.log(resulte);
+    return resulte;
+}
 }
 module.exports = CourseService;

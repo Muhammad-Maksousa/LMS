@@ -7,7 +7,8 @@ const videoSchema = mongoose.Schema({
   },
   description: String,
   duration: Number,
-  name_video:String
+  name_video:String,
+  order:{type:Number,require:true}
 });
 const Video = mongoose.model("Video", videoSchema);
 module.exports = Video;
