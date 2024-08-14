@@ -61,4 +61,5 @@ router.delete(
   apiHandler(verifyInstituteAdminToken),
   apiHandler(controller.deleteSubscripStudent)
 );
+router.post("/rejectTeacher",apiHandler(verifyInstituteAdminToken),apiHandler(controller.rejectTeacherByAdmin))
 module.exports = router;

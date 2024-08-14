@@ -23,4 +23,5 @@ router.get("/subscripeToInstitute/:id",apiHandler(verifyUserToken),apiHandler(co
 router.get("/getAllMessage",apiHandler(verifyUserToken),apiHandler(controller.GetAllMessage))
 router.get("/getMessage/:id",apiHandler(verifyUserToken),apiHandler(controller.getMessage))
 router.delete("/deleteMessage/:id",apiHandler(verifyUserToken),apiHandler(controller.DeleteMessage))
+router.get("/getMyRequest",apiHandler(verifyUserToken),apiHandler(controller.getMyRequest))
 module.exports = router;

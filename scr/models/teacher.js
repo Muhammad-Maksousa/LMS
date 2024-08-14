@@ -41,7 +41,11 @@ var schema = mongoose.Schema({
   socialMediaAccounts: {
     type: Array,
     require: false
-  }
+  },
+  messages:[{
+    instituteName:String,
+    theMessage:String
+  }]
 },
   {
     timestamps: true,

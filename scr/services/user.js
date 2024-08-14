@@ -7,6 +7,7 @@ const secretKey = require("../helpers/db/config.secret");
 const mongoose = require("mongoose");
 const Course = require("../models/course");
 const Institute = require("../models/institute");
+const JoinRequists = require("../models/joinRequists");
 const objectId = mongoose.Types.ObjectId
 class UserService {
   constructor({
@@ -209,6 +210,16 @@ class UserService {
     const message = user.message.find(msg => msg._id.toString() === messageId);
     return message
   }
+  async getMyRequest(userId) {
+    return await JoinRequists.find({
+      "userToInstituteByGrant.userId": new mongoose.Types.ObjectId(userId)
+  })
+  .select(["userToInstituteByGrant.instituteId", "userToInstituteByGrant.scholarshipId"])
+  .populate([
+      { path: "userToInstituteByGrant.instituteId", select: ["name"] },
+      { path: "userToInstituteByGrant.scholarshipId", select: ["name"] }
+  ]);
+}
 }
 
 module.exports = UserService;
