@@ -144,6 +144,14 @@ module.exports = {
     await new JoinRequistsService({}).removeCourseToInstituteRequist(instituteId, body.courseId);
     responseSender(res, updatedCourse);
   },
+  rejectCourse:async (req,res)=>{
+    const { instituteId } = req;
+    const { body } = req;
+    const updatedCourse = await new CourseService({}).changeStatus(body.courseId,body.status);
+    await new JoinRequistsService({}).removeCourseToInstituteRequist(instituteId, body.courseId);
+    //send feedback to teacher
+    responseSender(res, updatedCourse);
+  },
   getAllCoursesRequists:async (req,res)=>{
     const {instituteId} = req;
     const requists = await new JoinRequistsService({}).getAllCoursesRequists(instituteId);
