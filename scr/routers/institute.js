@@ -11,6 +11,17 @@ const { route } = require("./user");
 
 router.post("/", upload.single("image"), apiHandler(controller.add));
 router.post("/login", apiHandler(controller.login));
+router.put(
+  "/",
+  upload.single("image"),
+  apiHandler(verifyInstituteAdminToken),
+  apiHandler(controller.update)
+);
+router.get(
+  "/profile",
+  apiHandler(verifyInstituteAdminToken),
+  apiHandler(controller.getProfile)
+);
 router.post("/acceptCourse",apiHandler(verifyInstituteAdminToken),apiHandler(controller.acceptCourse));
 router.post("/rejectCourse",apiHandler(verifyInstituteAdminToken),apiHandler(controller.rejectCourse));
 router.put("/", upload.single("image"), apiHandler(verifyInstituteAdminToken),apiHandler(controller.update));
@@ -44,5 +55,10 @@ router.delete(
   "/deletMyStudent",
   apiHandler(verifyInstituteAdminToken),
   apiHandler(controller.deleteMyStudent)
+);
+router.delete(
+  "/deletePaidStudent",
+  apiHandler(verifyInstituteAdminToken),
+  apiHandler(controller.deleteSubscripStudent)
 );
 module.exports = router;

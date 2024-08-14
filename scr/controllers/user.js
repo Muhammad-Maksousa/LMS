@@ -164,4 +164,21 @@ module.exports = {
       responseSender(res, "you already member in institute");
     else if (result === 2) responseSender(res, "you don't have enough money");
   },
+  GetAllMessage: async(req,res)=>{
+    const { userId } = req;
+    const result = await new UserService({}).getAllMessage(userId)
+    responseSender(res,result) 
+  },
+  DeleteMessage: async(req,res)=>{
+    const {userId}= req;
+    const messageId = req.params.id
+    await new UserService({}).deleteMessage(userId,messageId)
+    responseSender(res,"the message deleted successfully")
+  },
+  getMessage: async (req,res)=>{
+    const {userId}= req;
+    const messageId = req.params.id
+    const result = await new UserService({}).getMessage(userId,messageId)
+    responseSender(res,result)
+  }
 };

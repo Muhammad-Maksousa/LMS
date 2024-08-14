@@ -5,6 +5,7 @@ const {
   responseSender,
   updateResponseSender,
 } = require("./../helpers/wrappers/response-sender");
+const Course = require("./../models/course")
 module.exports = {
   addVideo: async (req, res) => {
     let newVideo = { ...req.body };
@@ -19,9 +20,8 @@ module.exports = {
     if (req.file) {
       video.name_video = req.file.filename;
       video1 = await Video.findById(req.params.id);
-      const filePath =
-        "C:\\Users\\Eam Kadry\\Desktop\\ITE 4th\\مشروع 1\\LMS\\public\\video\\" +
-        video1.name_video;
+      const filePath = path.resolve(__dirname, '..', '..', 'public', 'video', video1.name_video)
+        console.log("video.name_video: "+ video1.name_video)
       console.log("Deleted video file:", filePath);
       await fs.unlink(filePath);
     }
@@ -38,9 +38,7 @@ module.exports = {
   },
   deleteVideo: async (req, res) => {
     const video = await Video.findByIdAndDelete(req.params.id);
-    const filePath =
-      "C:\\Users\\Eam Kadry\\Desktop\\ITE 4th\\مشروع 1\\LMS\\public\\video\\" +
-      video.name_video;
+    const filePath = path.resolve(__dirname, '..', '..', 'public', 'video', video.name_video)
     console.log("Deleted video file:", filePath);
     await fs.unlink(filePath);
     res.status(204).json({
@@ -48,7 +46,8 @@ module.exports = {
     });
   },
   getAllVideo: async (req, res) => {
-    const videos = await Video.find();
+    const courseId = req.params.id
+    const videos = await Course.findById(courseId).select("video").populate("video")
     responseSender(res, videos);
   },
   getVideo: async (req, res) => {

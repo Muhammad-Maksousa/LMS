@@ -52,10 +52,7 @@ var schema = mongoose.Schema(
         studentId: { type: mongoose.Types.ObjectId, ref: "user" },
         endDate: {
           type: Date,
-          default: function () {
-            return new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
-          },
-        },
+        },_id:false
       },
     ],
     cost: { type: Number, default: 0 },

@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const secretKey = require("../helpers/db/config.secret");
 const Scholarship = require("../models/Scholarship");
 const JoinRequists = require("../models/joinRequists");
+const User = require("../models/user")
 class InstituteService {
   constructor({
     credentialId,
@@ -21,8 +22,8 @@ class InstituteService {
     this.socialMediaAccounts = socialMediaAccounts;
     this.teachers = teachers;
     this.location = location;
-    this.cost =cost
-    this.wallet = wallet
+    this.cost = cost;
+    this.wallet = wallet;
   }
   async add() {
     const institute = new Institute({
@@ -33,7 +34,7 @@ class InstituteService {
       teachers: this.teachers,
       location: this.location,
       wallet: this.wallet,
-      cost: this.cost
+      cost: this.cost,
     });
     return await institute.save();
   }
@@ -88,8 +89,23 @@ class InstituteService {
       .populate("teachers.teacherId")
       .select("teachers");
   }
-  async acceptScholarshipStudenet(instituteId, scholarshipId, userId, approve) {
+  async acceptScholarshipStudenet(instituteId,scholarshipId,userId,approve, reasonOfReject) {
     if (!approve) {
+      const institute = await Institute.findById(instituteId);
+      const scholarship = await Scholarship.findById(scholarshipId);
+      const scholarshipName = scholarship.name 
+      const instituteName = institute.name
+      console.log("scholarshipName : " + scholarshipName);
+      console.log("instituteName : " + instituteName);
+      let message = {
+        instituteName: instituteName,
+        scholarshipName: scholarshipName,
+        theMessage: reasonOfReject,
+      };
+      await User.findByIdAndUpdate(
+        userId,
+        {$push: { message: message }, },
+        {  new: true,  runValidators: true,}  );
       return 0;
     } else {
       const scholarship = await Scholarship.findById(scholarshipId);
@@ -188,21 +204,31 @@ class InstituteService {
       console.error("Error adding students to myStudent array:", error);
     }
   }
-  async deleteMyStudent(instituteId,usersId){
+  async deleteMyStudent(instituteId, usersId) {
     await Institute.updateOne(
-        { _id: instituteId }, // Find the institute by its ID
-        {
-          $pull: {
-            myStudent: { studentId: { $in: usersId } },
-          },
-        }
-      );
+      { _id: instituteId }, // Find the institute by its ID
+      {
+        $pull: {
+          myStudent: { studentId: { $in: usersId } },
+        },
+      }
+    );
   }
-  async oneOfMyTeachers(teacherId,instituteId){
-    return await Institute.find({"_id":instituteId,"teachers.teacherId":teacherId});
+  async deleteSubscripStudent(instituteId, studentId) {
+    const result = await Institute.updateOne(
+      { _id: instituteId }, // Find the institute by its ID
+      {
+        $pull: {
+          paidStudent: { studentId: { $in: studentId } },
+        },
+      }
+    );
   }
-  async acceptCourse(instituteId,courseId,status){
-    
+  async oneOfMyTeachers(teacherId, instituteId) {
+    return await Institute.find({
+      _id: instituteId,
+      "teachers.teacherId": teacherId,
+    });
   }
 }
 
