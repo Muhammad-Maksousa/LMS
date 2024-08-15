@@ -85,5 +85,10 @@ module.exports = {
         const messageId = req.params.id
         await new TeacherService({}).deleteMessage(teacherId,messageId)
         responseSender(res,"the message deleted")
+    },
+    getMyPendingRequest :async(req,res)=>{
+        const {teacherId} = req
+        const result = await new TeacherService({}).getMyPendingRequest(teacherId)
+        responseSender(res,result)
     }
 };

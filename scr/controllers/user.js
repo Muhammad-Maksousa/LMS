@@ -185,5 +185,11 @@ module.exports = {
     const {userId}=req;
     const result = await new UserService({}).getMyRequest(userId);
     responseSender(res,result)
+  },
+  getMyProgress:async(req,res)=>{
+    const {userId} = req
+    const courseId = req.params.id
+    const result= await new UserService({}).getMyProgress(userId,courseId)
+    responseSender(res,result)
   }
 };
