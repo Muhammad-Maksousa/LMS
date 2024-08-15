@@ -10,7 +10,7 @@ router.put("/update/:id",apiHandler(verifyUserToken),upload.single("image"),apiH
 router.post("/enroll/:courseId",apiHandler(verifyUserToken),apiHandler(controller.enroll));
 router.post("/finishedCourse/:courseId",apiHandler(verifyUserToken),apiHandler(controller.finishedCourse));
 router.post("/rate/:courseId",apiHandler(verifyUserToken),apiHandler(controller.rate));
-router.post("/joinScholarship/:id/:scholarshipId",apiHandler(verifyUserToken),apiHandler(controller.joinScholarship))
+router.get("/joinScholarship/:id/:scholarshipId",apiHandler(verifyUserToken),apiHandler(controller.joinScholarship))
 
 router.get("/finishedCourses",apiHandler(verifyUserToken),apiHandler(controller.getMyFinishedCourses));
 router.get("/enrolledCourses",apiHandler(verifyUserToken),apiHandler(controller.getMyEnrolledCourses));
@@ -24,4 +24,5 @@ router.get("/getAllMessage",apiHandler(verifyUserToken),apiHandler(controller.Ge
 router.get("/getMessage/:id",apiHandler(verifyUserToken),apiHandler(controller.getMessage))
 router.delete("/deleteMessage/:id",apiHandler(verifyUserToken),apiHandler(controller.DeleteMessage))
 router.get("/getMyRequest",apiHandler(verifyUserToken),apiHandler(controller.getMyRequest))
+router.get("/getMyprogress/:id",apiHandler(verifyUserToken),apiHandler(controller.getMyProgress))
 module.exports = router;

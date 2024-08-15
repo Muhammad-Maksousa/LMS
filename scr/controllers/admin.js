@@ -36,7 +36,8 @@ module.exports = {
     },
     rejectTeacher:async(req,res)=>{
         const { teacherId } = req.params;
-        const teacher = await new TeacherService({}).rejectedByAdmin(teacherId);
+        const msg = req.body.message
+        const teacher = await new TeacherService({}).rejectedByAdmin(teacherId,msg);
         let notification = { 'notification': { title: "Institute reply to your join requist", body: "you have been Rejected Check your mailBox to know why." }};
         await new NotificationService({}).sendNotificationToTeacher(teacher.fcm, notification);
         responseSender(res, teacher);

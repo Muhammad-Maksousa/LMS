@@ -3,6 +3,7 @@ const Institute = require("../models/institute");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const secretKey = require("../helpers/db/config.secret");
+const JoinRequists=require("./../models/joinRequists")
 class TeacherService {
     constructor({ credentialId, firstName, lastName, image, cv, subject, summery, socialMediaAccounts }) {
         this.credentialId = credentialId;
@@ -72,9 +73,27 @@ class TeacherService {
     async acceptedByAdmin(id) {
         return await Teacher.findByIdAndUpdate(id, { status: 'accepted' }, { new: true });
     }
-    async rejectedByAdmin(id) {
-        return await Teacher.findByIdAndUpdate(id, { status: 'rejected' }, { new: true });
+    async rejectedByAdmin(id,msg) {
+        let message = {
+            instituteName:"admin",
+            theMessage:msg
+        }
+        return await Teacher.findByIdAndUpdate(id, { status: 'rejected',$push:{messages:message}} , { new: true });
     }
+    async getMyPendingRequest(id){
+        return await JoinRequists.find(
+            {
+              "teacherToInstitute.teacherId": id,
+            },
+            {
+              _id: 0, // Exclude the _id field from the results
+              "teacherToInstitute.instituteId": 1, // Include only the instituteId in the output
+            }
+          ).populate({
+            path: "teacherToInstitute.instituteId",
+            select: "name", 
+          });
+    } 
 }
 
 module.exports = TeacherService;

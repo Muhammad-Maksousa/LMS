@@ -226,6 +226,9 @@ class UserService {
 async getAll(){
   return await User.find();
 }
+async getMyProgress(userId,courseId){
+  return await User.find({_id:userId,"progress.courseID":courseId}).select("progress")
+}
 }
 
 module.exports = UserService;
