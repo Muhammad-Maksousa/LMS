@@ -90,7 +90,6 @@ async getOneCourse(id){
         }
       });
     }
-    console.log(resulte);
     return resulte;
 }
 async getRate(id){

@@ -48,26 +48,32 @@ class TeacherService {
     async getProfile(id) {
         return await Teacher.findById(id).populate("credentialId");
     }
-    async changeStatusByAdmin(teacherId,status) {
+    async changeStatusByAdmin(teacherId, status) {
         return await Teacher.findByIdAndUpdate(teacherId, { status: status }, { new: true });
     }
     async getAll() {
         return await Teacher.find();
     }
-    async getmyInstitutes(teacherId){
+    async getmyInstitutes(teacherId) {
         return await Institute.find({ "teachers.teacherId": teacherId });
     }
-    async getAllMessage(teacherId){
+    async getAllMessage(teacherId) {
         return await Teacher.findById(teacherId).select("messages")
     }
-    async getMessage(teacherId,messageId){
-        const teacher= await Teacher.findById(teacherId)
-        const message = teacher.messages.find(msg=>msg._id.toString()===messageId)
+    async getMessage(teacherId, messageId) {
+        const teacher = await Teacher.findById(teacherId)
+        const message = teacher.messages.find(msg => msg._id.toString() === messageId)
         return message
     }
-    async deleteMessage(teacherId,messageId){
-          const objectId = new mongoose.Types.ObjectId(messageId);
-            return await Teacher.findByIdAndUpdate(teacherId,{$pull:{messages: { _id: objectId }}})
+    async deleteMessage(teacherId, messageId) {
+        const objectId = new mongoose.Types.ObjectId(messageId);
+        return await Teacher.findByIdAndUpdate(teacherId, { $pull: { messages: { _id: objectId } } })
+    }
+    async acceptedByAdmin(id) {
+        return await Teacher.findByIdAndUpdate(id, { status: 'accepted' }, { new: true });
+    }
+    async rejectedByAdmin(id) {
+        return await Teacher.findByIdAndUpdate(id, { status: 'rejected' }, { new: true });
     }
 }
 

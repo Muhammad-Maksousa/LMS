@@ -12,7 +12,7 @@ const courseSchema = mongoose.Schema({
   ratings: [
     {
       rate: Number,
-      userId: { type: mongoose.Types.ObjectId, ref: "User" },
+      userId: { type: mongoose.Types.ObjectId, ref: "user" },
       comment: String,
     },
   ],

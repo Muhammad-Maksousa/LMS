@@ -21,6 +21,10 @@ class NotificationService {
         }
     };
     async sendNotificationToTeacher(fcm,notification){
+        const notification_options = {
+            priority: "high",
+            timeToLive: 60 * 60 * 24
+        };
         admin.messaging().sendToDevice(fcm, notification, notification_options)
                 .then(function (response) {
                     console.log("Successfully sent message:", response);

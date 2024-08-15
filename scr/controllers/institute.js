@@ -75,7 +75,7 @@ module.exports = {
     );
     const teacher = await new TeacherService({}).getProfile(body.teacherId); 
     let notification = { 'notification': { title: "Institute reply to your join requist", body: "you have been Accepted" }};
-    await new NotificationService({}).sendNotificationToTeacher(teacher.fcm,notification);
+   // await new NotificationService({}).sendNotificationToTeacher(teacher.fcm,notification);
     responseSender(res, resulte);
   },
   rejectTeacherByAdmin:async(req,res)=>{
@@ -84,9 +84,9 @@ module.exports = {
     const message = req.body.message
     await new InstituteService({}).rejectTeacher(instituteId,teacherId,message)
     await new JoinRequistsService({}).removeTeacherToInstituteRequist(instituteId,teacherId)
-    const teacher = await new TeacherService({}).getProfile(body.teacherId); 
+    const teacher = await new TeacherService({}).getProfile(teacherId); 
     let notification = { 'notification': { title: "Institute reply to your join requist", body: "you have been Rejected Check your mailBox to know why." }};
-    await new NotificationService({}).sendNotificationToTeacher(teacher.fcm,notification);
+   // await new NotificationService({}).sendNotificationToTeacher(teacher.fcm,notification);
     responseSender(res,"the teacher reject successfully")
   },
   teacherToinstituteRequists: async (req, res) => {
@@ -133,11 +133,11 @@ module.exports = {
     const user = await new UserService({}).getProfile(userId); 
     if (isApprove === 1){
     let notification = { 'notification': { title: "Institute reply to your join requist", body: "you have been Accepted" }};
-    await new NotificationService({}).sendNotificationToTeacher(user.fcm,notification);
+    //await new NotificationService({}).sendNotificationToTeacher(user.fcm,notification);
       responseSender(res, "the student add to insitute successfully");
     }else if (isApprove === 0){
       let notification = { 'notification': { title: "Institute reply to your join requist", body: "you have been Rejected" }};
-    await new NotificationService({}).sendNotificationToTeacher(user.fcm,notification);
+    //await new NotificationService({}).sendNotificationToTeacher(user.fcm,notification);
       responseSender(res, "the join Request Rejected successfully ");
     }else if (isApprove === 2){
       responseSender(res, "the student already member in institute");

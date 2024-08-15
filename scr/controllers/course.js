@@ -82,9 +82,7 @@ module.exports = {
   },
   getAllCoursesByTeacherId: async (req, res) => {
     const { teacherId } = req.params;
-    const courses = await new CourseService({}).getAllCoursesByTeacherId(
-      teacherId
-    );
+    const courses = await new CourseService({}).getAllCoursesByTeacherId(teacherId);
     responseSender(res, courses);
   },
   getAllUsersOfCourse: async (req, res) => {
@@ -102,7 +100,9 @@ module.exports = {
   },
   getRate: async (req, res) => {
     const { courseId } = req.params;
+    console.log(courseId);
+    
     const rate = await new CourseService({}).getRate(courseId);
-    responseSender(res,rate);
+    responseSender(res, rate);
   }
 };
