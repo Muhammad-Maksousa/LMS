@@ -27,27 +27,10 @@ const courseSchema = mongoose.Schema({
   language: {
     type: [String],
     required: true,
-    enum: {
-      values: ["English", "Spanish", "French", "German", "Arabic"],
-      message: "({VALUE}) is not valid language",
-    },
   },
   Education_Level: {
     type: String,
     default: "for any one",
-    enum: {
-      values: [
-        "Elementary",
-        "Secondary",
-        "High level",
-        "Beginner",
-        "Intermediate",
-        "Advanced",
-        "for any one",
-      ],
-      message:
-        "({VALUE}) is not valid for Education_Level just this values is true: 1- Elementary 2- Secondary 3- High level 4- Beginner 5- Intermediate 6- Advanced",
-    },
   },
   Teacher_ID: [{
     type: mongoose.Types.ObjectId,
