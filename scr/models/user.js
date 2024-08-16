@@ -8,7 +8,7 @@ const courseProgressSchema = new mongoose.Schema({
     enum: ["Video", "Article", "Quiz"]
   },
   percent: Number,
-},{_id:false});
+}, { _id: false });
 module.exports = (mongoose) => {
   var schema = mongoose.Schema(
     {
@@ -52,14 +52,14 @@ module.exports = (mongoose) => {
       wallet: {
         type: Number,
         required: false,
-        default:0
+        default: 0
+      },
+      message: [{
+        instituteName: String,
+        scholarshipName: String,
+        theMessage: String
+      }]
     },
-    message:[{
-      instituteName :String,
-      scholarshipName : String,
-      theMessage:String
-    }]
-  },
     {
       timestamps: true,
       strictPopulate: false,
