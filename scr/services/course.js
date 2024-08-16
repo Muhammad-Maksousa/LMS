@@ -90,7 +90,15 @@ async getOneCourse(id){
         }
       });
     }
-    return resulte;
+    const basicinfoOfCourse = await Course.findById(id,{quiz:0,video:0,article:0,managment:0,}).populate([
+      { path: "Teacher_ID", select: ["firstName","lastName"] },
+      { path: "instituteId", select: ["name"] }
+  ]);
+  const final= {
+    basic:basicinfoOfCourse,
+    order:resulte
+  }
+    return final;
 }
 async getRate(id){
   return Course.findById(id).select('ratings').populate([{path:"ratings.userId",select:['firstName','lastName']}]);
