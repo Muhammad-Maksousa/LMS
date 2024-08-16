@@ -71,7 +71,7 @@ class TeacherService {
         return await Teacher.findByIdAndUpdate(teacherId, { $pull: { messages: { _id: objectId } } })
     }
     async acceptedByAdmin(id) {
-        await JoinRequists.findOneAndDelete({"teacherToInstitute.teacherId": id});
+        await JoinRequists.findOneAndDelete({"teacherToPlatform.teacherId": id});
         return await Teacher.findByIdAndUpdate(id, { status: 'accepted' }, { new: true });
     }
     async rejectedByAdmin(id,msg) {
@@ -79,7 +79,7 @@ class TeacherService {
             instituteName:"admin",
             theMessage:msg
         }
-        await JoinRequists.findOneAndDelete({"teacherToInstitute.teacherId": id});
+        await JoinRequists.findOneAndDelete({"teacherToPlatform.teacherId": id});
         return await Teacher.findByIdAndUpdate(id, { status: 'rejected',$push:{messages:message}} , { new: true });
     }
     async getMyPendingRequest(id){
