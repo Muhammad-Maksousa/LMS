@@ -239,9 +239,9 @@ async getMyProgress(userId,courseId){
 async isMyInstitute(id,instituteId){
   const exist = await Institute.findOne({id: instituteId,
       $or: [
-        { "studentScholarship.studentId": { $in: id } },
-        { "myStudent.studentId": { $in: id } },
-        { "paidStudent.studentId": { $in: id } },
+        { "studentScholarship.studentId": id },
+        { "myStudent.studentId": id },
+        { "paidStudent.studentId": id },
       ],
     });
   if(exist)
