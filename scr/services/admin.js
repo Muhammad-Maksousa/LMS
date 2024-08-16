@@ -22,6 +22,10 @@ class AdminService{
     };
     async getProfile(id){
         return await Admin.findById(id).populate("credentialId");
-    }
+    };
+    async updateWallet(cost){
+        let admin = Admin.findById(id);//TODO we have one Admin so get his ID
+        return await Admin.findByIdAndUpdate(id,{wallet:admin.wallet+cost});
+    };
 }
 module.exports = AdminService;

@@ -1,13 +1,15 @@
 const User = require("../models/user");
 const roles = require("../helpers/roles");
 const CustomError = require("../helpers/errors/custom-errors");
-const errors = require("../helpers/errors/errors");
+const errors = require("../helpers/errors/errors.json");
 const jwt = require("jsonwebtoken");
 const secretKey = require("../helpers/db/config.secret");
 const mongoose = require("mongoose");
 const Course = require("../models/course");
 const Institute = require("../models/institute");
 const JoinRequists = require("../models/joinRequists");
+const InstituteService = require("./Institute");
+const AdminService = require("./admin");
 const objectId = mongoose.Types.ObjectId
 class UserService {
   constructor({
@@ -60,10 +62,13 @@ class UserService {
     });
     return { info: user, token: token };
   }
-  async enroll(courseId, userId) {
+  async enroll(courseId, userId,cost) {
+    const user = User.findById(userId);
+    if(user.wallet<cost)
+      throw new CustomError(errors.You_Can_Not_Do_This);
     return await User.findByIdAndUpdate(
       userId,
-      { $push: { enrolledCourses: courseId } },
+      { $push: { enrolledCourses: courseId } },{wallet:user.wallet-cost},
       { new: true }
     );
   }
@@ -193,6 +198,8 @@ class UserService {
           { $inc: { wallet: -cost } },
           { new: true }
         );
+        await new InstituteService({}).updateWallet(instituteId,"money");
+        //await new AdminService({}).updateWallet("money");TODO FOR ADMIN ID
         return 1;
       } else return 2;
     }
@@ -229,6 +236,19 @@ async getAll(){
 async getMyProgress(userId,courseId){
   return await User.find({_id:userId,"progress.courseID":courseId}).select("progress")
 }
+async isMyInstitute(id,instituteId){
+  const exist = await Institute.findOne({id: instituteId,
+      $or: [
+        { "studentScholarship.studentId": id },
+        { "myStudent.studentId": id },
+        { "paidStudent.studentId": id },
+      ],
+    });
+  if(exist)
+    return true;
+  else
+  return false;
+};
 }
 
 module.exports = UserService;

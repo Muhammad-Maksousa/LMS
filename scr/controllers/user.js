@@ -1,6 +1,9 @@
 const CredentialService = require("../services/credential");
 const UserService = require("../services/user");
 const CourseService = require("../services/course");
+const InstituteService = require("../services/Institute");
+const TeacherService = require("../services/teacher");
+const AdminService = require("../services/admin")
 const {
   responseSender,
   updateResponseSender,
@@ -40,7 +43,22 @@ module.exports = {
   enroll: async (req, res) => {
     const { courseId } = req.params;
     const { userId } = req;
-    const user = await new UserService({}).enroll(courseId, userId);
+    const course = await new CourseService({}).getById(courseId);
+    let user;
+    if (course.instituteId) {
+      const UserexistInInstitute = await new UserService({}).isMyInstitute(userId, course.instituteId);
+      if (UserexistInInstitute)
+        user = await new UserService({}).enroll(courseId, userId, 0);
+      else
+        user = await new UserService({}).enroll(courseId, userId, course.cost);
+      await new InstituteService({}).updateWallet(course.instituteId, course.cost / 40);
+      await new TeacherService({}).updateWallet(course.Teacher_ID[0].teacherId, course.cost / 20);
+      //await new AdminService({}).updateWallet(course/40);TODO Admin ID
+    } else {
+      user = await new UserService({}).enroll(courseId, userId, course.cost);
+      await new TeacherService({}).updateWallet(course.Teacher_ID[0].teacherId, course.cost / 40);
+      // await new AdminService({}).updateWallet(course/60); TODO Admin ID
+    }
     responseSender(res, user);
   },
   getMyEnrolledCourses: async (req, res) => {
@@ -125,9 +143,9 @@ module.exports = {
     responseSender(res, progress);
     console.log(
       "the progress is ---- --------------- ------------- ------------ ---------- ------: " +
-        progress +
-        progress.done +
-        progress.doneModel
+      progress +
+      progress.done +
+      progress.doneModel
     );
   },
   rate: async (req, res) => {
@@ -164,32 +182,38 @@ module.exports = {
       responseSender(res, "you already member in institute");
     else if (result === 2) responseSender(res, "you don't have enough money");
   },
-  GetAllMessage: async(req,res)=>{
+  GetAllMessage: async (req, res) => {
     const { userId } = req;
     const result = await new UserService({}).getAllMessage(userId)
-    responseSender(res,result) 
+    responseSender(res, result)
   },
-  DeleteMessage: async(req,res)=>{
-    const {userId}= req;
+  DeleteMessage: async (req, res) => {
+    const { userId } = req;
     const messageId = req.params.id
-    await new UserService({}).deleteMessage(userId,messageId)
-    responseSender(res,"the message deleted successfully")
+    await new UserService({}).deleteMessage(userId, messageId)
+    responseSender(res, "the message deleted successfully")
   },
-  getMessage: async (req,res)=>{
-    const {userId}= req;
+  getMessage: async (req, res) => {
+    const { userId } = req;
     const messageId = req.params.id
-    const result = await new UserService({}).getMessage(userId,messageId)
-    responseSender(res,result)
+    const result = await new UserService({}).getMessage(userId, messageId)
+    responseSender(res, result)
   },
-  getMyRequest:async(req,res)=>{
-    const {userId}=req;
+  getMyRequest: async (req, res) => {
+    const { userId } = req;
     const result = await new UserService({}).getMyRequest(userId);
-    responseSender(res,result)
+    responseSender(res, result)
   },
-  getMyProgress:async(req,res)=>{
-    const {userId} = req
+  getMyProgress: async (req, res) => {
+    const { userId } = req
     const courseId = req.params.id
-    const result= await new UserService({}).getMyProgress(userId,courseId)
-    responseSender(res,result)
+    const result = await new UserService({}).getMyProgress(userId, courseId)
+    responseSender(res, result)
+  },
+  isMyInstitute: async (req, res) => {
+    const { instituteId } = req;
+    const { userId } = req;
+    const user = await new UserService({}).isMyInstitute(userId, instituteId);
+    responseSender(res, user);
   }
 };

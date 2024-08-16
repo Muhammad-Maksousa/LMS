@@ -93,7 +93,11 @@ class TeacherService {
             path: "teacherToInstitute.instituteId",
             select: "name", 
           });
-    } 
+    }
+    async updateWallet(id,cost){
+        let teacher = Teacher.findById(id);
+        return await Teacher.findByIdAndUpdate(id,{wallet:teacher.wallet+cost});
+      }
 }
 
 module.exports = TeacherService;

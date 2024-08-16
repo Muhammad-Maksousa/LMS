@@ -5,6 +5,8 @@ const cors = require('cors');
 const db = require("./models");
 const app = express();
 const path = require('path');
+const http = require("http").createServer(app);
+const { Server } = require("socket.io");
 app.use(express.static(path.join(__dirname, "../public")));
 // Log requests to the console.
 app.use(logger('dev'));
@@ -34,6 +36,13 @@ app.use(function (req, res, next) {
 app.use(express.json({}));
 app.use(require("./routers"));
 app.use(require("./helpers/errors/custom-errors").defaultHandler);
+const io = new Server(http, {
+    // options
+});
+require("./controllers/community")(io);
+http.listen(3031, () => {
+    console.log('socket listening on *:3031');
+});
 app.listen(port, () => {
     console.log(`Server is listening on ${port}`);
 

@@ -238,6 +238,10 @@ class InstituteService {
       "teachers.teacherId": teacherId,
     });
   }
+  async updateWallet(id,cost){
+    let institute = Institute.findById(id);
+    return await Institute.findByIdAndUpdate(id,{wallet:institute.wallet+cost});
+  }
 }
 
 module.exports = InstituteService;
