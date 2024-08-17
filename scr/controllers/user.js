@@ -51,12 +51,12 @@ module.exports = {
         user = await new UserService({}).enroll(courseId, userId, 0);
       else
         user = await new UserService({}).enroll(courseId, userId, course.cost);
-      await new InstituteService({}).updateWallet(course.instituteId, course.cost / 40);
-      await new TeacherService({}).updateWallet(course.Teacher_ID[0].teacherId, course.cost / 20);
+      //await new InstituteService({}).updateWallet(course.instituteId, course.cost / 40);
+      //await new TeacherService({}).updateWallet(course.Teacher_ID[0].teacherId, course.cost / 20);
       //await new AdminService({}).updateWallet(course/40);TODO Admin ID
     } else {
       user = await new UserService({}).enroll(courseId, userId, course.cost);
-      await new TeacherService({}).updateWallet(course.Teacher_ID[0].teacherId, course.cost / 40);
+      //await new TeacherService({}).updateWallet(course.Teacher_ID[0].teacherId, course.cost / 40);
       // await new AdminService({}).updateWallet(course/60); TODO Admin ID
     }
     responseSender(res, user);
