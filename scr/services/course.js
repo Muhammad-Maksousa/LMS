@@ -73,7 +73,7 @@ async getOneCourse(id){
         if(article.order==i){
           let item = {
             id:article.id,
-            name:article.name,
+            title:article.title,
             type:'article'
           }
           resulte.push(item);

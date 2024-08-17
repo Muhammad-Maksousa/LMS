@@ -68,7 +68,7 @@ class UserService {
       throw new CustomError(errors.You_Can_Not_Do_This);
     return await User.findByIdAndUpdate(
       userId,
-      { $push: { enrolledCourses: courseId } },{wallet:user.wallet-cost},
+      { $push: { enrolledCourses: courseId } },
       { new: true }
     );
   }
