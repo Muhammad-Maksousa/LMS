@@ -24,13 +24,15 @@ module.exports = {
     responseSender(res, user);
   },
   update: async (req, res) => {
-    const { id: UserId } = req.params;
-    const { body } = req;
+    const {  UserId } = req;
+    let  body  = req.body;
+    body = Object.assign({}, body);
     if (req.file) body.image = req.file.filename;
     if (body.password || body.email) {
       const user = await new UserService({}).getProfile(UserId);
       await new CredentialService(body).changeCredential(user.credentialId);
     }
+   
     const updateedUser = await new UserService(body).update(UserId, body);
     updateResponseSender(res, "User");
   },
@@ -56,7 +58,7 @@ module.exports = {
       //await new AdminService({}).updateWallet(course/40);TODO Admin ID
     } else {
       user = await new UserService({}).enroll(courseId, userId, course.cost);
-      await new TeacherService({}).updateWallet(course.Teacher_ID[0].teacherId, course.cost / 40);
+      await new TeacherService({}).updateWallet(course.Teacher_ID[0], course.cost / 40);
       // await new AdminService({}).updateWallet(course/60); TODO Admin ID
     }
     responseSender(res, user);
