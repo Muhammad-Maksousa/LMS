@@ -14,8 +14,7 @@ router.get("/joinScholarship/:id/:scholarshipId",apiHandler(verifyUserToken),api
 
 router.get("/finishedCourses",apiHandler(verifyUserToken),apiHandler(controller.getMyFinishedCourses));
 router.get("/enrolledCourses",apiHandler(verifyUserToken),apiHandler(controller.getMyEnrolledCourses));
-//router.get("/profile",apiHandler(verifyUserToken),apiHandler(controller.getProfile));
-router.get("/profile",apiHandler(controller.getProfile));
+router.get("/profile",apiHandler(verifyUserToken),apiHandler(controller.getProfile));
 router.get("/wishlist/:courseId",apiHandler(verifyUserToken),apiHandler(controller.addToWishList));
 router.get("/wishlist",apiHandler(verifyUserToken),apiHandler(controller.getWishList));
 router.delete("/wishlist/:courseId",apiHandler(verifyUserToken),apiHandler(controller.deleteFromWishList));
