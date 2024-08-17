@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const secretKey = require("../helpers/db/config.secret");
 const JoinRequists=require("./../models/joinRequists")
 class TeacherService {
-    constructor({ credentialId, firstName, lastName, image, cv, subject, summery, socialMediaAccounts }) {
+    constructor({ credentialId, firstName, lastName, image, cv, subject, summery, socialMediaAccounts ,fcm}) {
         this.credentialId = credentialId;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -14,6 +14,7 @@ class TeacherService {
         this.subject = subject;
         this.summery = summery;
         this.socialMediaAccounts = socialMediaAccounts;
+        this.fcm = fcm;
     }
     async add() {
         const teacher = new Teacher({
@@ -26,7 +27,8 @@ class TeacherService {
             summery: this.summery,
             socialMediaAccounts: this.socialMediaAccounts,
             wallet: 0,
-            status: "pending"
+            status: "pending",
+            fcm:this.fcm
         });
         return await teacher.save();
     }
@@ -38,7 +40,8 @@ class TeacherService {
             CV: this.cv,
             subject: this.subject,
             summery: this.summery,
-            socialMediaAccounts: this.socialMediaAccounts
+            socialMediaAccounts: this.socialMediaAccounts,
+            fcm:this.fcm
         });
     }
     async login(cred) {

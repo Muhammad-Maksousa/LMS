@@ -40,7 +40,7 @@ class UserService {
       birthDate: Date.parse(this.birthDate),
       credentialId: this.credentialId,
       role: this.role,
-      fcm:this.fcm
+      fcm: this.fcm
     });
     return await user.save();
   }
@@ -62,15 +62,32 @@ class UserService {
     });
     return { info: user, token: token };
   }
-  async enroll(courseId, userId,cost) {
-    const user = User.findById(userId);
-    if(user.wallet<cost)
-      throw new CustomError(errors.You_Can_Not_Do_This);
-    return await User.findByIdAndUpdate(
-      userId,
-      { $push: { enrolledCourses: courseId } },
-      { new: true }
-    );
+  async enroll(courseId, userId, cost) {
+    try {
+      const user = await User.findById(userId);
+      if (!user)
+        throw new CustomError(errors.The_User_Not_Found);
+
+      if (typeof user.wallet !== 'number' || user.wallet < cost)
+        throw new CustomError(errors.You_Can_Not_Do_This);
+
+      const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        {
+          $push: { enrolledCourses: courseId },
+          $inc: { wallet: -cost }
+        },
+        { new: true }
+      );
+
+      if (!updatedUser) 
+        throw new CustomError('Failed to update user');
+      return updatedUser;
+
+    } catch (error) {
+      console.error('Error during enrollment:', error);
+      throw new CustomError('Enrollment failed', error);
+    }
   }
   async getMyEnrolledCourses(id) {
     return await User.findById(id)
@@ -184,8 +201,8 @@ class UserService {
       const cost = institute.cost;
       const studentWallet = student.wallet;
       if (studentWallet - cost >= 0) {
-        let student1= {
-          studentId:studentId,
+        let student1 = {
+          studentId: studentId,
           endDate: Date.now() + 365 * 24 * 60 * 60 * 100
         }
         await Institute.findByIdAndUpdate(
@@ -198,16 +215,16 @@ class UserService {
           { $inc: { wallet: -cost } },
           { new: true }
         );
-        await new InstituteService({}).updateWallet(instituteId,"money");
+        await new InstituteService({}).updateWallet(instituteId, "money");
         //await new AdminService({}).updateWallet("money");TODO FOR ADMIN ID
         return 1;
       } else return 2;
     }
   }
-  async getAllMessage(userId){
+  async getAllMessage(userId) {
     return await User.findById(userId).select("message")
   }
-  async deleteMessage(userId,messageId){
+  async deleteMessage(userId, messageId) {
     const objectId = new mongoose.Types.ObjectId(messageId);
     return await User.findByIdAndUpdate(
       userId,
@@ -215,7 +232,7 @@ class UserService {
       { new: true } // Return the updated document
     );
   }
-  async getMessage(userId,messageId){
+  async getMessage(userId, messageId) {
     const user = await User.findById(new objectId(userId));
     const message = user.message.find(msg => msg._id.toString() === messageId);
     return message
@@ -223,32 +240,33 @@ class UserService {
   async getMyRequest(userId) {
     return await JoinRequists.find({
       "userToInstituteByGrant.userId": new mongoose.Types.ObjectId(userId)
-  })
-  .select(["userToInstituteByGrant.instituteId", "userToInstituteByGrant.scholarshipId"])
-  .populate([
-      { path: "userToInstituteByGrant.instituteId", select: ["name"] },
-      { path: "userToInstituteByGrant.scholarshipId", select: ["name"] }
-  ]);
-};
-async getAll(){
-  return await User.find();
-}
-async getMyProgress(userId,courseId){
-  return await User.find({_id:userId,"progress.courseID":courseId}).select("progress")
-}
-async isMyInstitute(id,instituteId){
-  const exist = await Institute.findOne({id: instituteId,
+    })
+      .select(["userToInstituteByGrant.instituteId", "userToInstituteByGrant.scholarshipId"])
+      .populate([
+        { path: "userToInstituteByGrant.instituteId", select: ["name"] },
+        { path: "userToInstituteByGrant.scholarshipId", select: ["name"] }
+      ]);
+  };
+  async getAll() {
+    return await User.find();
+  }
+  async getMyProgress(userId, courseId) {
+    return await User.find({ _id: userId, "progress.courseID": courseId }).select("progress")
+  }
+  async isMyInstitute(id, instituteId) {
+    const exist = await Institute.findOne({
+      id: instituteId,
       $or: [
         { "studentScholarship.studentId": id },
         { "myStudent.studentId": id },
         { "paidStudent.studentId": id },
       ],
     });
-  if(exist)
-    return true;
-  else
-  return false;
-};
+    if (exist)
+      return true;
+    else
+      return false;
+  };
 }
 
 module.exports = UserService;

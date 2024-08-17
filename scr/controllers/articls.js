@@ -9,8 +9,7 @@ const Course = require("./../models/course")
 module.exports = {
   addArticle: async (req, res) => {
     let newArticle = { ...req.body };
-    newArticle.path_file =path.resolve(__dirname,'..','..','public','article',req.file.filename)
-      
+    newArticle.path_file = req.file.filename;
     newArticle = await Article.create(newArticle);
     responseSender(res, newArticle);
   },
@@ -33,7 +32,7 @@ module.exports = {
       new: true,
       runValdiators: true,
     });
-    article.path_file=path.resolve(__dirname,'..','..','public','article',req.file.filename)
+    article.path_file = path.resolve(__dirname, '..', '..', 'public', 'article', req.file.filename)
     await article.save()
 
     res.status(201).json({

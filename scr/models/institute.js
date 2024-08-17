@@ -19,6 +19,10 @@ var schema = mongoose.Schema(
       type: String,
       required: false,
     },
+    fcm: {
+      type: String,
+      require: false,
+    },
     wallet: {
       type: Number,
       default: 0,

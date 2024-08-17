@@ -26,7 +26,8 @@ module.exports = (mongoose) => {
         required: true,
       },
       fcm: {
-        type: String
+        type: String,
+        required:false
       },
       image: {
         type: String,
@@ -51,9 +52,15 @@ module.exports = (mongoose) => {
       progress: [courseProgressSchema],
       wallet: {
         type: Number,
-        required: false,
-        default: 0
-      },
+        required: true,  // Making it required ensures the wallet is always set.
+        default: 0,
+        validate: {
+            validator: function(v) {
+                return !isNaN(v);  // Ensures that the wallet value is a valid number.
+            },
+            message: props => '${props.value} is not a valid wallet value!'
+        }
+    },
       message: [{
         instituteName: String,
         scholarshipName: String,
