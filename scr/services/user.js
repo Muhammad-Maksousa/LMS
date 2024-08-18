@@ -138,7 +138,7 @@ class UserService {
     );
   }
   async getWishList(id) {
-    return await User.findById(id).select("wishlist").populate({path:"wishlist",select:"name"});
+    return await User.findById(id).select("wishlist").populate({path:"wishlist",populate:{path: 'Teacher_ID',select:['firstName','lastName']}});
   }
 
   async addToProgress(userId, courseId, done, model) {
