@@ -92,7 +92,7 @@ class UserService {
   async getMyEnrolledCourses(id) {
     return await User.findById(id)
       .select("enrolledCourses")
-      .populate("enrolledCourses");
+      .populate({path:"enrolledCourses",populate:{path: 'Teacher_ID',select:['firstName','lastName']}});
   }
   async finishCourse(courseId, userId) {
     const user = await User.findById(userId);
@@ -115,7 +115,7 @@ class UserService {
   async getMyFinishedCourses(id) {
     return await User.findById(id)
       .select("finishedCourses")
-      .populate("finishedCourses");
+      .populate({path:"finishedCourses",populate:{path: 'Teacher_ID',select:['firstName','lastName']}});
   }
   async getProfile(id) {
     return await User.findById(id)
