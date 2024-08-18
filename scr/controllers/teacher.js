@@ -90,5 +90,12 @@ module.exports = {
         const {teacherId} = req
         const result = await new TeacherService({}).getMyPendingRequest(teacherId)
         responseSender(res,result)
+    },
+    checkMyStatus:async (req,res)=>{
+        const id = req.params.id;
+        const teacher = await new TeacherService({}).getProfile(id);
+        let status = teacher.status;
+        let messages = await new TeacherService({}).getAllMessage(id);
+        responseSender(res,{status,messages});
     }
 };

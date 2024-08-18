@@ -16,5 +16,6 @@ router.get("/getAllMessage",apiHandler(verifyTeacherToken),apiHandler(controller
 router.get("/getMessage/:id",apiHandler(verifyTeacherToken),apiHandler(controller.getMessage))
 router.delete("/deleteMessage/:id",apiHandler(verifyTeacherToken),apiHandler(controller.deleteMessage))
 router.get("/getMypendingMessage",apiHandler(verifyTeacherToken),apiHandler(controller.getMyPendingRequest))
+router.get("/checkMyStatus/:id",apiHandler(controller.checkMyStatus))
 
 module.exports = router;

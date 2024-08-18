@@ -36,7 +36,7 @@ var schema = mongoose.Schema({
   },
   fcm: {
     type: String,
-    require: true,
+    require: false,
   },
   summery: {
     type: String,
