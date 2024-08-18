@@ -63,11 +63,16 @@ class UserService {
     return { info: user, token: token };
   }
   async enroll(courseId, userId, cost) {
+    const user = await User.findById(userId);
+    if(user.enrolledCourses.includes(courseId))
+      throw new CustomError(errors.You_Already_Enrolled_In_This_Course);
+    if (user.wallet < cost)
+      throw new CustomError(errors.You_Can_Not_Do_This);
+
     try {
-      const user = await User.findById(userId);
       if (!user)
         throw new CustomError(errors.The_User_Not_Found);
-
+      
       if (typeof user.wallet !== 'number' || user.wallet < cost)
         throw new CustomError(errors.You_Can_Not_Do_This);
 
@@ -97,7 +102,7 @@ class UserService {
   async finishCourse(courseId, userId) {
     const user = await User.findById(userId);
     const finishCourse = user.finishedCourses.includes(courseId);
-    if (!finishCourse) {
+    //if (!finishCourse) {
       await User.findByIdAndUpdate(
         userId,
         { $pull: { enrolledCourses: courseId } },
@@ -108,9 +113,9 @@ class UserService {
         { $push: { finishedCourses: courseId } },
         { new: true }
       );
-    } else {
+    /*} else {
       return;
-    }
+    }*/
   }
   async getMyFinishedCourses(id) {
     return await User.findById(id)

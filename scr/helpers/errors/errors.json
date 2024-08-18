@@ -39,8 +39,12 @@
     "message": "The User Not Found",
     "httpStatusCode": 404
   },
-  "You_Can_Not_Do_This":{
+  "You_Can_Not_Do_This": {
     "message": "You Can Not Do This Operation",
+    "httpStatusCode": 403
+  },
+  "You_Already_Enrolled_In_This_Course": {
+    "message": "You Already Enrolled In This Course",
     "httpStatusCode": 403
   }
 }
