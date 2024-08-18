@@ -1,6 +1,8 @@
 const Admin = require("../models/admin");
 const jwt = require("jsonwebtoken");
 const secretKey = require("../helpers/db/config.secret");
+const CustomError = require("../helpers/errors/custom-errors");
+const errors = require("../helpers/errors/errors.json");
 class AdminService{
     constructor({name,image,credentialId}){
         this.name = name;
@@ -24,8 +26,12 @@ class AdminService{
         return await Admin.findById(id).populate("credentialId");
     };
     async updateWallet(cost){
-        let admin = Admin.findById(id);//TODO we have one Admin so get his ID
-        return await Admin.findByIdAndUpdate(id,{wallet:admin.wallet+cost});
+        try {
+            return await Admin.findByIdAndUpdate('66bcbf9b3ac09343f4ed77f3',{$inc:{wallet:cost}});   
+        } catch (error) {
+            console.log(error);
+            throw new CustomError(errors.You_Can_Not_Do_This);
+        }
     };
 }
 module.exports = AdminService;

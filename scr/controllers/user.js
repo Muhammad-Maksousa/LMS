@@ -44,20 +44,20 @@ module.exports = {
     const { courseId } = req.params;
     const { userId } = req;
     const course = await new CourseService({}).getById(courseId);
-    let user;
+    let user=1;
     if (course.instituteId) {
       const UserexistInInstitute = await new UserService({}).isMyInstitute(userId, course.instituteId);
       if (UserexistInInstitute)
         user = await new UserService({}).enroll(courseId, userId, 0);
       else
         user = await new UserService({}).enroll(courseId, userId, course.cost);
-      //await new InstituteService({}).updateWallet(course.instituteId, course.cost / 40);
-      //await new TeacherService({}).updateWallet(course.Teacher_ID[0].teacherId, course.cost / 20);
-      //await new AdminService({}).updateWallet(course/40);TODO Admin ID
+      await new InstituteService({}).updateWallet(course.instituteId, course.cost*(40/100));
+      await new TeacherService({}).updateWallet(course.Teacher_ID[0], course.cost*(20/100));
+      await new AdminService({}).updateWallet(course.cost*(40/100));
     } else {
       user = await new UserService({}).enroll(courseId, userId, course.cost);
-      //await new TeacherService({}).updateWallet(course.Teacher_ID[0].teacherId, course.cost / 40);
-      // await new AdminService({}).updateWallet(course/60); TODO Admin ID
+      await new TeacherService({}).updateWallet(course.Teacher_ID[0], course.cost *(40/100));
+      await new AdminService({}).updateWallet(course.cost*(60/100));
     }
     responseSender(res, user);
   },

@@ -3,7 +3,9 @@ const Institute = require("../models/institute");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const secretKey = require("../helpers/db/config.secret");
-const JoinRequists=require("./../models/joinRequists")
+const JoinRequists=require("./../models/joinRequists");
+const CustomError = require("../helpers/errors/custom-errors");
+const errors = require("../helpers/errors/errors.json");
 class TeacherService {
     constructor({ credentialId, firstName, lastName, image, cv, subject, summery, socialMediaAccounts ,fcm}) {
         this.credentialId = credentialId;
@@ -101,7 +103,12 @@ class TeacherService {
     }
     async updateWallet(id,cost){
         let teacher = Teacher.findById(id);
-        return await Teacher.findByIdAndUpdate(id,{wallet:teacher.wallet+cost});
+        try {
+            return await Teacher.updateOne({_id:id},{$inc:{wallet:cost}});
+        } catch (error) {
+            console.error('Error during enrollment:', error);
+            throw new CustomError('teacher proplem');
+        }
       }
 }
 

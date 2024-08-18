@@ -239,8 +239,13 @@ class InstituteService {
     });
   }
   async updateWallet(id,cost){
-    let institute = Institute.findById(id);
-    return await Institute.findByIdAndUpdate(id,{wallet:institute.wallet+cost});
+    try {
+      let institute = Institute.findById(id);
+      return await Institute.findByIdAndUpdate(id,{$inc:{wallet:cost}}); 
+    } catch (error) {
+      console.log(error);
+      throw new Error(error);
+    }
   }
 }
 
