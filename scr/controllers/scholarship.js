@@ -11,7 +11,7 @@ module.exports = {
     const institute = await Institute.findById(instituteID);
     institute.scholarship.push(newScholarship.id);
     institute.save();
-    responseSender(res, newScholarship);
+    responseSender(res, "the scholar ship created succsfully");
   },
   getAll: async (req, res) => {
     const allScolarship = await Scholarship.find();
