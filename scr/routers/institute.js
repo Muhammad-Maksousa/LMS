@@ -62,4 +62,7 @@ router.delete(
   apiHandler(controller.deleteSubscripStudent)
 );
 router.post("/rejectTeacher",apiHandler(verifyInstituteAdminToken),apiHandler(controller.rejectTeacherByAdmin))
+router.get("/countMyStudent",apiHandler(verifyInstituteAdminToken),apiHandler(controller.getMyStudentNumber))
+router.get("/countMyPaidStudent",apiHandler(verifyInstituteAdminToken),apiHandler(controller.getMyPaidStudentNumber))
+router.get("/countMyScholarShipStudent",apiHandler(verifyInstituteAdminToken),apiHandler(controller.getMyScholarShipNumber))
 module.exports = router;

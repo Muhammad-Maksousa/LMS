@@ -76,7 +76,7 @@ module.exports = {
     const teacher = await new TeacherService({}).getProfile(body.teacherId); 
     let notification = { 'notification': { title: "Institute reply to your join requist", body: "you have been Accepted" }};
    // await new NotificationService({}).sendNotificationToTeacher(teacher.fcm,notification);
-    responseSender(res, resulte);
+    responseSender(res, "the teacher accepted successfully");
   },
   rejectTeacherByAdmin:async(req,res)=>{
     const {instituteId} = req
@@ -91,9 +91,7 @@ module.exports = {
   },
   teacherToinstituteRequists: async (req, res) => {
     const { instituteId } = req;
-    const resulte = await new JoinRequistsService(
-      {}
-    ).getTeacherToInstituteRequists(instituteId);
+    const resulte = await new JoinRequistsService({}).getTeacherToInstituteRequists(instituteId);
     responseSender(res, resulte);
   },
   getMyTeachers: async (req, res) => {
@@ -199,5 +197,21 @@ module.exports = {
     const {instituteId} = req;
     const requists = await new JoinRequistsService({}).getAllCoursesRequists(instituteId);
     responseSender(res,requists);
+  },
+  getMyStudentNumber:async(req,res)=>{
+    const {instituteId} = req;
+    const number = await new InstituteService({}).getNmuberOfMyStudent(instituteId)
+    responseSender(res,number)
+  },
+  getMyScholarShipNumber:async(req,res)=>{
+    const {instituteId} = req;
+    const number = await new InstituteService({}).getStudentScholarshipCount(instituteId)
+    responseSender(res,number)
+  },
+  getMyPaidStudentNumber:async(req,res)=>{
+    const {instituteId} = req;
+    const number = await new InstituteService({}).getPaidStudentCount(instituteId)
+    responseSender(res,number)
   }
+
 };

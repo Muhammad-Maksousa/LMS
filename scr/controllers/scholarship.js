@@ -24,8 +24,11 @@ module.exports = {
   getScholarshipByInstitute: async (req, res) => {
     InstituteId = req.params.id;
     const ScolarInstitute = await Institute.findById(InstituteId)
-      .populate("scholarship")
-      .select("scholarship");
+            .populate({
+                path: "scholarship",
+                select: "name EndDate", // Adjust "lastChance" based on your Scholarship model's field name
+            })
+            .select("scholarship");
     responseSender(res, ScolarInstitute);
   },
   deleteScholarship: async (req, res) => {

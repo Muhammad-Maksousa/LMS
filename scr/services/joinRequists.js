@@ -49,12 +49,20 @@ class JoinRequistsService {
     }
   }
   async getTeacherToInstituteRequists(instituteId) {
-    return await JoinRequists.find({
-      "teacherToInstitute.instituteId": instituteId,
-    })
-      .populate("teacherToInstitute.teacherId")
-      .populate("teacherToInstitute.instituteId");
-  }
+    // Fetch only the teacherToInstitute field and populate the teacherId with selected fields
+    const requests = await JoinRequists.find({
+        "teacherToInstitute.instituteId": instituteId,
+    }).populate({
+        path: "teacherToInstitute.teacherId",
+        select: "firstName lastName subject",
+    });
+
+    // Map the results to return only the teacherToInstitute.teacherId field
+    return requests.map((request) => ({
+        teacherToInstitute: request.teacherToInstitute.teacherId,
+    }));
+}
+
   async removeTeacherToInstituteRequist(instituteId, teacherId) {
     return await JoinRequists.findOneAndDelete({
       "teacherToInstitute.instituteId": instituteId,
@@ -67,13 +75,23 @@ class JoinRequistsService {
       "courseToInstitute.courseId": courseId,
     });
   }
-  async getScholarshipRequests(instituteId, scholarshipId) {
-    const result = await JoinRequists.find({
-      "userToInstituteByGrant.instituteId": instituteId,
-      "userToInstituteByGrant.scholarshipId": scholarshipId,
-    }).populate("userToInstituteByGrant.userId");
+    async getScholarshipRequests(instituteId, scholarshipId) {
+      const result = await JoinRequists.find({
+        "userToInstituteByGrant.instituteId": instituteId,
+        "userToInstituteByGrant.scholarshipId": scholarshipId,
+    }).populate({
+        path: "userToInstituteByGrant.userId",
+        select: "firstName lastName",
+    });
 
-    return result;
+    // Map the results to extract only the userId array with firstName, lastName, and id
+    return result.map((request) => 
+        request.userToInstituteByGrant.userId.map(user => ({
+            firstName: user.firstName,
+            lastName: user.lastName,
+            id: user._id.toString() // Ensure the ObjectId is converted to a string
+        }))
+    ).flat();
   }
   async remveUserToInstituteByGrant(instituteId, scholarshipId, userId) {
     return await JoinRequists.findOneAndUpdate(

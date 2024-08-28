@@ -85,26 +85,36 @@ class InstituteService {
       { new: true }
     );
   }
-  async rejectTeacher(instituteId,teacherId,theReason){
-    const institute= await Institute.findById(instituteId)
-    const instituteName = institute.name
-    let message ={
-      instituteName:instituteName,
-      theMessage:theReason
-    }
-    return await Teacher.findByIdAndUpdate(teacherId,{$push:{messages:message}},{new:true}) 
+  async rejectTeacher(instituteId, teacherId, theReason) {
+    const institute = await Institute.findById(instituteId);
+    const instituteName = institute.name;
+    let message = {
+      instituteName: instituteName,
+      theMessage: theReason,
+    };
+    return await Teacher.findByIdAndUpdate(
+      teacherId,
+      { $push: { messages: message } },
+      { new: true }
+    );
   }
   async getMyTeachers(instituteId) {
     return await Institute.findById(instituteId)
       .populate("teachers.teacherId")
       .select("teachers");
   }
-  async acceptScholarshipStudenet(instituteId,scholarshipId,userId,approve, reasonOfReject) {
+  async acceptScholarshipStudenet(
+    instituteId,
+    scholarshipId,
+    userId,
+    approve,
+    reasonOfReject
+  ) {
     if (!approve) {
       const institute = await Institute.findById(instituteId);
       const scholarship = await Scholarship.findById(scholarshipId);
-      const scholarshipName = scholarship.name 
-      const instituteName = institute.name
+      const scholarshipName = scholarship.name;
+      const instituteName = institute.name;
       let message = {
         instituteName: instituteName,
         scholarshipName: scholarshipName,
@@ -112,8 +122,9 @@ class InstituteService {
       };
       await User.findByIdAndUpdate(
         userId,
-        {$push: { message: message }, },
-        {  new: true,  runValidators: true,}  );
+        { $push: { message: message } },
+        { new: true, runValidators: true }
+      );
       return 0;
     } else {
       const scholarship = await Scholarship.findById(scholarshipId);
@@ -238,15 +249,37 @@ class InstituteService {
       "teachers.teacherId": teacherId,
     });
   }
-  async updateWallet(id,cost){
+  async updateWallet(id, cost) {
     try {
       let institute = Institute.findById(id);
-      return await Institute.findByIdAndUpdate(id,{$inc:{wallet:cost}}); 
+      return await Institute.findByIdAndUpdate(id, { $inc: { wallet: cost } });
     } catch (error) {
       console.log(error);
       throw new Error(error);
     }
   }
+  async getNmuberOfMyStudent(instituteId) {
+    const result = await Institute.findById(instituteId)
+      .select("myStudent")
+      .lean(); // Converts the document to a plain JavaScript object
+
+    return result.myStudent.length;
+  }
+  async  getStudentScholarshipCount(instituteId) {
+    const result = await Institute.findById(instituteId)
+        .select("studentScholarship")
+        .lean(); // Converts the document to a plain JavaScript object
+
+    return result.studentScholarship.length;
+}
+async  getPaidStudentCount(instituteId) {
+  const result = await Institute.findById(instituteId)
+      .select("paidStudent")
+      .lean(); // Converts the document to a plain JavaScript object
+
+  return result.paidStudent.length;
+}
+
 }
 
 module.exports = InstituteService;
